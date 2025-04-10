@@ -684,5 +684,6 @@ export {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
+  SidebarRail,
   useSidebar,
 }
