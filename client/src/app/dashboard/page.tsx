@@ -1,6 +1,7 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { SidebarDemo } from "@/components/SidebarDemo";
+
+import { ModernSidebar } from "@/components/ModernSidebar";
 import { DashboardContent } from "@/components/DashboardContent";
 
 const mockStories = [
@@ -24,15 +25,14 @@ export default async function Dashboard() {
     redirect("/sign-in");
   }
 
-  return (
-    <SidebarDemo
-      dashboardContent={
-        <DashboardContent
-          firstName={user.firstName || "Storyteller"}
-          stories={mockStories}
-          activities={mockActivities}
-        />
-      }
+return (
+  <ModernSidebar>
+    <DashboardContent
+      firstName={user.firstName || "Storyteller"}
+      stories={mockStories}
+      activities={mockActivities}
     />
-  );
+  </ModernSidebar>
+);
+
 }
