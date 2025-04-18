@@ -2,7 +2,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
 import { ModernSidebar } from "@/components/ModernSidebar";
-import { DashboardContent } from "@/components/DashboardContent";
+import DashboardContent from "@/components/DashboardContent";
 
 const mockStories = [
   { id: 1, title: "The Lost Kingdom", status: "Draft", lastEdited: "2025-03-30", progress: 60, wordCount: 4500, genre: "Fantasy" },

@@ -1,4 +1,4 @@
-// GET endpoint (not directly called in DashboardContent.tsx but used in page.tsx to fetch data and pass as props)
+
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { Story } from "@/lib/models/Story";
