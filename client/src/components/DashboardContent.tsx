@@ -496,7 +496,7 @@ export default function DashboardContent({
                               backgroundColor:
                                 story.status === "Published"
                                   ? "#9333EA"
-                                  : "#32CD32", // Purple for Published, Green for Draft
+                                  : "#32CD32",  
                             }}
                           ></div>
                           <div className="p-4 pl-6">
