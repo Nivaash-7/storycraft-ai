@@ -1,38 +1,61 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-
 import { ModernSidebar } from "@/components/ModernSidebar";
-import { DashboardContent } from "@/components/DashboardContent";
-
-const mockStories = [
-  { id: 1, title: "The Lost Kingdom", status: "Draft", lastEdited: "2025-03-30", progress: 60, wordCount: 4500, genre: "Fantasy" },
-  { id: 2, title: "Echoes of the Past", status: "Published", lastEdited: "2025-03-29", progress: 100, wordCount: 12000, genre: "Historical Fiction" },
-  { id: 3, title: "A New Dawn", status: "Draft", lastEdited: "2025-03-28", progress: 20, wordCount: 1500, genre: "Science Fiction" },
-  { id: 4, title: "Whispers in the Dark", status: "Draft", lastEdited: "2025-03-27", progress: 85, wordCount: 9000, genre: "Mystery" },
-];
-
-const mockActivities = [
-  { id: 1, action: "Published", storyTitle: "The Lost Kingdom", timestamp: "2025-03-30 14:30" },
-  { id: 2, action: "Published", storyTitle: "Echoes of the Past", timestamp: "2025-03-29 09:15" },
-  { id: 3, action: "Started", storyTitle: "A New Dawn", timestamp: "2025-03-28 18:45" },
-  { id: 4, action: "Started", storyTitle: "Whispers in the Dark", timestamp: "2025-03-27 16:20" },
-];
+import DashboardContent from "@/components/DashboardContent";
+import clientPromise from "@/lib/mongodb";
+import type { Story } from "@/lib/models/Story";
+import type { Activity } from "@/lib/models/Activity";
 
 export default async function Dashboard() {
   const user = await currentUser();
 
   if (!user) {
-    redirect("/sign-in");
+    redirect("/sign-in"); 
+    return null;
   }
 
-return (
-  <ModernSidebar>
-    <DashboardContent
-      firstName={user.firstName || "Storyteller"}
-      stories={mockStories}
-      activities={mockActivities}
-    />
-  </ModernSidebar>
-);
+  const client = await clientPromise;
+  const db = client.db("storycraft");
 
+  const stories = await db
+    .collection<Story>("stories")
+    .find({ userId: user.id })
+    .project({ content: 0 })
+    .sort({ lastEdited: -1 })
+    .toArray();
+
+  const activities = await db
+    .collection<Activity>("activities")
+    .find({ userId: user.id })
+    .sort({ createdAt: -1 })
+    .limit(10)
+    .toArray();
+
+  const formattedStories = stories.map((story) => ({
+    id: story._id.toString(),
+    title: story.title,
+    status: story.status,
+    lastEdited: story.lastEdited.toISOString().split("T")[0],
+    wordCount: story.wordCount,
+    genre: story.genre,
+  }));
+
+  const formattedActivities = activities.map((activity) => ({
+    id: activity._id.toString(),
+    action: activity.type,
+    storyTitle: activity.details.split(" ")[1] || "Unknown",
+    timestamp: activity.createdAt.toISOString().replace("T", " ").split(".")[0],
+  }));
+
+  return (
+    <ModernSidebar>
+      <div className="ml-4"> 
+        <DashboardContent
+          firstName={user.firstName || "Storyteller"}
+          stories={formattedStories}
+          activities={formattedActivities}
+        />
+      </div>
+    </ModernSidebar>
+  );
 }
