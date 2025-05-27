@@ -11,6 +11,29 @@ export async function POST(req: NextRequest) {
     let prompt = "";
 
     switch (mode) {
+      case "chat":
+        const chatHistory = storyContent ? `Previous Chat Context: The story so far is "${storyContent}..."\n` : "";
+        prompt = `You are TaleWeaver, a friendly and creative AI writing assistant for a website where users write stories with AI help. Your personality is helpful, encouraging, and slightly playful. Respond in a conversational tone (50-100 words). ${
+          title ? `Story title: "${title}". ` : ""
+        }${genre ? `Genre: "${genre}". ` : ""}User: "${input}". ${chatHistory}`;
+        break;
+
+      case "generate":
+        const generateHistory = storyContent ? `Previous Chat Context: The story so far is "${storyContent}..."\n` : "";
+        prompt = `You are TaleWeaver, a creative and helpful AI writing assistant. ${
+          title ? `Story title: "${title}". ` : ""
+        }${genre ? `Genre: "${genre}". ` : ""}Based on the user input "${input}" and the existing story "${storyContent}", continue the narrative with a standalone story snippet (50-150 words) that builds naturally on the prior events and themes. Prioritize smooth transitions for new characters or developments, avoiding abrupt introductions. Minimize repetition of recent actions or phrases unless they evolve uniquely. Use a modern writing style unless specified otherwise (e.g., gothic, poetic). Focus on advancing the plot with fresh perspectives, ensuring emotional or situational progression. If no specific direction is given, suggest a logical next step.${generateHistory}`;
+        break;
+
+      case "feedback":
+        if (!storyContent?.trim()) {
+          return NextResponse.json({ error: "No story content provided for feedback" }, { status: 400 });
+        }
+        const feedbackHistory = storyContent ? `Previous Feedback Context: The story so far is "${storyContent}..."\n` : "";
+        prompt = `You are TaleWeaver, a supportive and insightful AI writing assistant for a website where users write stories with AI help. Story: "${storyContent}". ${
+          title ? `Story title: "${title}". ` : ""
+        }${genre ? `Genre: "${genre}". ` : ""}${feedbackHistory}User: "${input}". Give constructive feedback on pacing or dialogue, suggest one easy tweak, and ask a thoughtful question (50-100 words). Be encouraging but honest.`;
+        break;
 
       case "summary":
         prompt = `Generate a concise summary (50-75 words) for this ${genre || "Unknown"} story: "${storyContent}...". Preserve the tone and key elements.`;
