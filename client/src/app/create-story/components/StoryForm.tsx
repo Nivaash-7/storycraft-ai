@@ -49,8 +49,11 @@ export default function StoryMetadataForm({
           <Label htmlFor="genre" className="text-sm font-medium mb-1.5 block text-foreground">
             Genre
           </Label>
-          <Select onValueChange={setGenre} required>
-            <SelectTrigger id="genre" className="bg-card border-border text-foreground hover:bg-white cursor-pointer">
+          <Select value={genre} onValueChange={setGenre} required>
+            <SelectTrigger
+              id="genre"
+              className="bg-card border-border text-foreground hover:bg-white cursor-pointer"
+            >
               <SelectValue placeholder="Select a genre" />
             </SelectTrigger>
             <SelectContent className="bg-card text-foreground border-border">
