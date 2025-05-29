@@ -186,7 +186,7 @@ export function useStoryActions() {
           setHasShownAutosaveWarning(true)
         }
       },
-      1 * 60 * 1000,
+      5 * 60 * 1000,
     )
     return () => clearInterval(autosave)
   }, [storyContent, title, genre, storyId, userId, hasShownAutosaveWarning])
