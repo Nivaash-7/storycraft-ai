@@ -5,6 +5,7 @@
 
 body {
   @apply bg-background text-foreground font-[var(--font-sans)];
+  scroll-behavior: smooth;
 }
 
 @theme inline {
@@ -106,3 +107,27 @@ body {
 .cl-userPreviewSecondaryIdentifier {
   display: none;
 }
+
+::-webkit-scrollbar {
+  width: 8px; 
+  height: 8px; 
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background); 
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary); 
+  border-radius: 9999px; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+* {
+  scrollbar-width: thin; 
+  scrollbar-color: var(--primary) var(--background);
+}
+

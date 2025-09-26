@@ -1,4 +1,3 @@
-
 "use client";
 import * as React from "react";
 import {
@@ -43,11 +42,11 @@ interface AppSidebarProps {
   className?: string;
 }
 
-export function AppSidebar({ className }: AppSidebarProps) {
+function AppSidebar({ className }: AppSidebarProps) {
   const router = useRouter();
   const { user } = useUser();
   const { redirectToUserProfile } = useClerk();
-  const { setOpen, open } = useSidebar();
+  const { setOpen, open, isMobile } = useSidebar();
   const [openMenus, setOpenMenus] = React.useState<Record<string, boolean>>({
     story: false,
   });
@@ -109,11 +108,15 @@ export function AppSidebar({ className }: AppSidebarProps) {
   ];
 
   const handleMouseEnter = () => {
-    setOpen(true);
+    if (!isMobile) {
+      setOpen(true);
+    }
   };
 
   const handleMouseLeave = () => {
-    setOpen(false);
+    if (!isMobile) {
+      setOpen(false);
+    }
   };
 
   return (
@@ -330,7 +333,6 @@ export function AppSidebar({ className }: AppSidebarProps) {
                   align="end"
                   className="w-56 bg-sidebar text-sidebar-foreground border-sidebar-border"
                 >
-                  
                   <DropdownMenuItem
                     className="hover:bg-sidebar-accent focus:bg-sidebar-accent cursor-pointer"
                   >
@@ -358,15 +360,77 @@ interface ModernSidebarProps {
 
 export function ModernSidebar({ children }: ModernSidebarProps) {
   const [open, setOpen] = React.useState(false);
+  const router = useRouter();
 
   return (
     <SidebarProvider open={open} onOpenChange={setOpen}>
       <AppSidebar />
       <SidebarInset>
-        <main className="flex-1 overflow-auto bg-background text-foreground">
+        <main className="flex-1 overflow-auto bg-background text-foreground relative">
           {children}
+          <MobileNavbar />
         </main>
       </SidebarInset>
     </SidebarProvider>
+  );
+}
+
+function MobileNavbar() {
+  const { isMobile } = useSidebar();
+  const router = useRouter();
+  const { user } = useUser();
+
+  const mobileNavItems = [
+    {
+      title: "Home",
+      icon: Home,
+      url: "/",
+      onClick: () => router.push("/"),
+    },
+    {
+      title: "Dashboard",
+      icon: LayoutDashboard,
+      url: "/dashboard",
+      onClick: () => router.push("/dashboard"),
+    },
+    {
+      title: "Community",
+      icon: Group,
+      url: "/community",
+      onClick: () => router.push("/community"),
+    },
+    {
+      title: "Profile",
+      icon: UserButton,
+    },
+  ];
+
+  if (!isMobile) return null;
+
+  return (
+    <nav className="fixed bottom-0 left-0 right-0 bg-background text-sidebar-foreground border-t border-sidebar-border flex justify-around items-center h-16 md:hidden">
+      {mobileNavItems.map((item, index) => (
+        <button
+          key={index}
+          onClick={item.onClick}
+          className="flex flex-col items-center justify-center flex-1 h-full hover:bg-sidebar-accent"
+          aria-label={item.title}
+        >
+          {item.icon === UserButton ? (
+            <UserButton
+              afterSignOutUrl="/"
+              appearance={{
+                elements: {
+                  userButtonAvatarBox: "h-6 w-6",
+                },
+              }}
+            />
+          ) : (
+            <item.icon className="h-6 w-6" />
+          )}
+          <span className="text-xs mt-1">{item.title}</span>
+        </button>
+      ))}
+    </nav>
   );
 }
