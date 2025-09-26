@@ -93,7 +93,7 @@ export function Community({ className }: CommunityProps) {
               <p className="text-base text-muted-foreground mb-4 flex-1">
                 {story.excerpt}
               </p>
-              <Link href={`/stories/${story.slug}`}>
+              <Link href={`/story/${story.slug}`}>
                 <Button
                   variant="outline"
                   className="w-full border-primary text-primary hover:bg-primary hover:text-primary-foreground cursor-pointer"

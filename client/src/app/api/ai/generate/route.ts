@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
 
       case "generate":
         const generateHistory = storyContent ? `Previous Chat Context: The story so far is "${storyContent}..."\n` : "";
-        prompt = `You are TaleWeaver, a creative and helpful AI writing assistant. ${
+        prompt = `You are TaleWeaver, a creative and helpful AI modern story writing assistant. ${
           title ? `Story title: "${title}". ` : ""
         }${genre ? `Genre: "${genre}". ` : ""}Based on the user input "${input}" and the existing story "${storyContent}", continue the narrative with a standalone story snippet (50-150 words) that builds naturally on the prior events and themes. Prioritize smooth transitions for new characters or developments, avoiding abrupt introductions. Minimize repetition of recent actions or phrases unless they evolve uniquely. Use a modern writing style unless specified otherwise (e.g., gothic, poetic). Focus on advancing the plot with fresh perspectives, ensuring emotional or situational progression. If no specific direction is given, suggest a logical next step.${generateHistory}`;
         break;
