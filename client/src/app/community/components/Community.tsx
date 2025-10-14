@@ -240,6 +240,33 @@ const Community = ({ stories, loading, error, setStories }: CommunityProps) => {
     const [commentInput, setCommentInput] = useState("")
     const textareaRef = useRef<HTMLTextAreaElement>(null)
     const storyRef = useRef<HTMLDivElement>(null)
+    const commentSectionRef = useRef<HTMLDivElement>(null) // New ref for comment section
+
+    // Handle clicks outside the comment section
+    useEffect(() => {
+      const handleClickOutside = (event: MouseEvent) => {
+        if (
+          showingComms &&
+          commentSectionRef.current &&
+          !commentSectionRef.current.contains(event.target as Node) &&
+          storyRef.current &&
+          !storyRef.current.contains(event.target as Node)
+        ) {
+          saveScrollPosition(story._id)
+          setShowingComments((prev: Set<string>) => {
+            const newSet = new Set(prev)
+            newSet.delete(story._id)
+            return newSet
+          })
+          setTimeout(() => restoreScrollPosition(story._id), 0)
+        }
+      }
+
+      document.addEventListener("mousedown", handleClickOutside)
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside)
+      }
+    }, [showingComms, story._id])
 
     const handleCommentSubmit = async () => {
       if (!user) {
@@ -541,6 +568,7 @@ const Community = ({ stories, loading, error, setStories }: CommunityProps) => {
             <AnimatePresence>
               {showingComms && (
                 <motion.div
+                  ref={commentSectionRef}
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
@@ -641,7 +669,7 @@ const Community = ({ stories, loading, error, setStories }: CommunityProps) => {
       <ModernSidebar>
         <div ref={scrollRef} className="w-full max-w-7xl mx-auto px-2 py-8">
           <header className="mb-8 space-y-2">
-            <h1 className="text-pretty text-4xl font-bold text-primary">Community Stories Hub</h1>
+            <h1 className="text-pretty text-4xl font-bold text-primary">Community Stories </h1>
             <p className="text-muted-foreground leading-relaxed">
               Discover new voices and connect with fellow writers while we load the latest updates.
             </p>
@@ -688,7 +716,7 @@ const Community = ({ stories, loading, error, setStories }: CommunityProps) => {
     <ModernSidebar>
       <div ref={scrollRef} className="w-full max-w-7xl mx-auto px-2 py-8">
         <header className="mb-8 space-y-2">
-          <h1 className="text-pretty text-4xl font-bold text-primary">Community Stories Hub</h1>
+          <h1 className="text-pretty text-4xl font-bold text-primary">Community Stories </h1>
           <p className="text-muted-foreground leading-relaxed">
             Dive into stories from our community, share your thoughts, and stay inspired together.
           </p>
