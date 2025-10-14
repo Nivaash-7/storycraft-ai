@@ -5,10 +5,8 @@ import {
   Home,
   LayoutDashboard,
   BookOpen,
-  Edit,
   PlusCircle,
   LogOut,
-  ChevronRight,
   Group,
   ChevronsUpDownIcon,
 } from "lucide-react";
@@ -47,22 +45,17 @@ function AppSidebar({ className }: AppSidebarProps) {
   const { user } = useUser();
   const { redirectToUserProfile } = useClerk();
   const { setOpen, open, isMobile } = useSidebar();
-  const [openMenus, setOpenMenus] = React.useState<Record<string, boolean>>({
-    story: false,
-  });
 
-  // Close all dropdowns when the sidebar collapses
-  React.useEffect(() => {
-    if (!open) {
-      setOpenMenus({ story: false });
+  const handleMouseEnter = () => {
+    if (!isMobile) {
+      setOpen(true);
     }
-  }, [open]);
+  };
 
-  const toggleMenu = (menu: string) => {
-    setOpenMenus((prev) => ({
-      ...prev,
-      [menu]: !prev[menu],
-    }));
+  const handleMouseLeave = () => {
+    if (!isMobile) {
+      setOpen(false);
+    }
   };
 
   const homeItems = [
@@ -72,6 +65,9 @@ function AppSidebar({ className }: AppSidebarProps) {
       url: "/",
       onClick: () => router.push("/"),
     },
+  ];
+
+  const analyticsItems = [
     {
       title: "Dashboard",
       icon: LayoutDashboard,
@@ -79,10 +75,10 @@ function AppSidebar({ className }: AppSidebarProps) {
       onClick: () => router.push("/dashboard"),
     },
     {
-      title: "Story",
+      title: "My Stories",
       icon: BookOpen,
-      onClick: () => toggleMenu("story"),
-      hasSubMenu: true,
+      url: "/my-stories",
+      onClick: () => router.push("/my-stories"),
     },
   ];
 
@@ -99,25 +95,7 @@ function AppSidebar({ className }: AppSidebarProps) {
       url: "/community",
       onClick: () => router.push("/community"),
     },
-    {
-      title: "Drafts",
-      icon: BookOpen,
-      url: "/drafts",
-      onClick: () => router.push("/drafts"),
-    },
   ];
-
-  const handleMouseEnter = () => {
-    if (!isMobile) {
-      setOpen(true);
-    }
-  };
-
-  const handleMouseLeave = () => {
-    if (!isMobile) {
-      setOpen(false);
-    }
-  };
 
   return (
     <div
@@ -155,119 +133,69 @@ function AppSidebar({ className }: AppSidebarProps) {
           </SidebarMenu>
         </SidebarHeader>
 
-        <SidebarContent className="py-2">
+        <SidebarContent className=" mt-10 py-1">
           <SidebarGroup>
-            <SidebarGroupLabel className="py-2 text-xs text-sidebar-accent-foreground">
+            <SidebarGroupLabel className=" py-1 text-xs text-sidebar-accent-foreground">
               Home
             </SidebarGroupLabel>
             <SidebarGroupContent>
-              <SidebarMenu className="gap-1">
-                {homeItems.map((item) =>
-                  item.hasSubMenu ? (
-                    <React.Fragment key={item.title}>
-                      <SidebarMenuItem>
-                        <SidebarMenuButton
-                          tooltip={item.title}
-                          onClick={item.onClick}
-                          className="flex w-full cursor-pointer items-center justify-between"
-                        >
-                          <div className="flex items-center">
-                            <item.icon
-                              className={cn("size-5 mr-2", !open && "size-5")}
-                            />
-                            {open && <span>{item.title}</span>}
-                          </div>
-                          {open && (
-                            <ChevronRight
-                              className={cn(
-                                "size-5 transition-transform duration-200",
-                                openMenus.story && "rotate-90"
-                              )}
-                            />
-                          )}
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                      <SidebarGroupContent
-                        className={cn(
-                          "grid transition-all duration-200 ease-in-out pl-4",
-                          openMenus.story && open
-                            ? "grid-rows-[1fr] opacity-100"
-                            : "grid-rows-[0fr] opacity-0"
-                        )}
+              <SidebarMenu className="gap-0.5">
+                {homeItems.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild tooltip={item.title}>
+                      <a
+                        href={item.url}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          item.onClick();
+                        }}
                       >
-                        <div className="overflow-hidden">
-                          <SidebarMenu className="gap-1">
-                            <SidebarMenuItem>
-                              <SidebarMenuButton asChild tooltip="My Stories">
-                                <a
-                                  href="/my-stories"
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    router.push("/my-stories");
-                                  }}
-                                >
-                                  <BookOpen
-                                    className={cn(
-                                      "size-5 mr-2",
-                                      !open && "size-4"
-                                    )}
-                                  />
-                                  {open && <span>My Stories</span>}
-                                </a>
-                              </SidebarMenuButton>
-                            </SidebarMenuItem>
-                            <SidebarMenuItem>
-                              <SidebarMenuButton asChild tooltip="Edit Story">
-                                <a
-                                  href="/edit-story"
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    router.push("/edit-story");
-                                  }}
-                                >
-                                  <Edit
-                                    className={cn(
-                                      "size-5 mr-2",
-                                      !open && "size-4"
-                                    )}
-                                  />
-                                  {open && <span>Edit Story</span>}
-                                </a>
-                              </SidebarMenuButton>
-                            </SidebarMenuItem>
-                          </SidebarMenu>
-                        </div>
-                      </SidebarGroupContent>
-                    </React.Fragment>
-                  ) : (
-                    <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton asChild tooltip={item.title}>
-                        <a
-                          href={item.url}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            item.onClick();
-                          }}
-                        >
-                          <item.icon
-                            className={cn("size-5 mr-2", !open && "size-5")}
-                          />
-                          {open && <span>{item.title}</span>}
-                        </a>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  )
-                )}
+                        <item.icon
+                          className={cn("size-5 mr-2", !open && "size-5")}
+                        />
+                        {open && <span>{item.title}</span>}
+                      </a>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
 
-          <SidebarGroup className="mt-4">
-            <SidebarGroupLabel className="py-2 text-xs text-sidebar-accent-foreground">
+          <SidebarGroup className="mt-1">
+            <SidebarGroupLabel className="py-1 text-xs text-sidebar-accent-foreground">
+              Analytics
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu className="gap-0.5">
+                {analyticsItems.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild tooltip={item.title}>
+                      <a
+                        href={item.url}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          item.onClick();
+                        }}
+                      >
+                        <item.icon
+                          className={cn("size-5 mr-2", !open && "size-5")}
+                        />
+                        {open && <span>{item.title}</span>}
+                      </a>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+
+          <SidebarGroup className="mt-1">
+            <SidebarGroupLabel className="py-1 text-xs text-sidebar-accent-foreground">
               Create
             </SidebarGroupLabel>
             <SidebarGroupContent>
-              <SidebarMenu className="gap-1">
+              <SidebarMenu className="gap-0.5">
                 {createItems.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild tooltip={item.title}>
