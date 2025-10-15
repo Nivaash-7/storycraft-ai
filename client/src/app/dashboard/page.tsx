@@ -3,8 +3,7 @@ import { redirect } from "next/navigation";
 import { ModernSidebar } from "@/components/ModernSidebar";
 import DashboardContent from "@/components/DashboardContent";
 import clientPromise from "@/lib/mongodb";
-import type { Story } from "@/lib/models/Story";
-import type { Activity } from "@/lib/models/Activity";
+import type { Story,Activity } from "@/lib/models";
 
 export default async function Dashboard() {
   const user = await currentUser();

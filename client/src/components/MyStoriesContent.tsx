@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useState, useMemo, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -130,7 +129,9 @@ export default function MyStoriesContent({
     });
 
     filtered.sort((a, b) => {
-      let aValue: any, bValue: any;
+      let aValue: string | number | Date;
+      let bValue: string | number | Date;
+
 
       switch (sortBy) {
         case "title":
@@ -170,23 +171,6 @@ export default function MyStoriesContent({
   const endIndex = startIndex + storiesPerPage;
   const currentStories = filteredAndSortedStories.slice(startIndex, endIndex);
 
-  const stats = useMemo(() => {
-    const totalStories = stories.length;
-    const publishedStories = stories.filter(
-      (s) => s.status === "Published"
-    ).length;
-    const draftStories = stories.filter((s) => s.status === "Draft").length;
-    const totalWords = stories.reduce((sum, story) => sum + story.wordCount, 0);
-    const totalLikes = stories.reduce((sum, story) => sum + story.likes, 0);
-
-    return {
-      totalStories,
-      publishedStories,
-      draftStories,
-      totalWords,
-      totalLikes,
-    };
-  }, [stories]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {

@@ -46,7 +46,7 @@ export function AITourDialog({ showAITour, setShowAITour, openAIAssistant }: AIT
             </h3>
             <div className="ml-8 space-y-2">
               <p className="text-sm text-muted-foreground">
-                Click on TaleWeaver's avatar in the bottom right corner to open the AI assistant.
+                Click on TaleWeaver&apos;s avatar in the bottom right corner to open the AI assistant.
               </p>
               <p className="text-sm text-muted-foreground">
                 You can also use the quick action buttons in the story editor toolbar.
@@ -66,8 +66,7 @@ export function AITourDialog({ showAITour, setShowAITour, openAIAssistant }: AIT
                 <div>
                   <p className="text-sm font-medium">Chat Mode</p>
                   <p className="text-xs text-muted-foreground">
-                    Discuss story ideas, ask questions about writing techniques, or just chat about your creative
-                    process.
+                    Discuss story ideas, ask questions about writing techniques, or just chat about your creative process.
                   </p>
                 </div>
               </div>
@@ -76,7 +75,7 @@ export function AITourDialog({ showAITour, setShowAITour, openAIAssistant }: AIT
                 <div>
                   <p className="text-sm font-medium">Generate Mode</p>
                   <p className="text-xs text-muted-foreground">
-                    Describe a scene, character, or plot you'd like to add to your story. AI will generate content you
+                    Describe a scene, character, or plot you&apos;d like to add to your story. AI will generate content you
                     can insert.
                   </p>
                 </div>
@@ -86,7 +85,7 @@ export function AITourDialog({ showAITour, setShowAITour, openAIAssistant }: AIT
                 <div>
                   <p className="text-sm font-medium">Feedback Mode</p>
                   <p className="text-xs text-muted-foreground">
-                    Ask for specific feedback on your story's pacing, characters, dialogue, or overall structure.
+                    Ask for specific feedback on your story&apos;s pacing, characters, dialogue, or overall structure.
                   </p>
                 </div>
               </div>
@@ -101,7 +100,7 @@ export function AITourDialog({ showAITour, setShowAITour, openAIAssistant }: AIT
             </h3>
             <div className="ml-8 space-y-2">
               <p className="text-sm text-muted-foreground">
-                When the AI generates story content, click the "Edit & Use" button to customize it before adding to your
+                When the AI generates story content, click the &quot;Edit &amp; Use&quot; button to customize it before adding to your
                 story.
               </p>
               <p className="text-sm text-muted-foreground">
@@ -183,7 +182,7 @@ export function OnboardingDialog({ showOnboarding, setShowOnboarding }: Onboardi
             <Sparkles className="w-5 h-5 text-primary" />
             Welcome to StoryCraft AI!
           </DialogTitle>
-          <DialogDescription>Let's get you started with creating amazing stories using AI</DialogDescription>
+          <DialogDescription>Let&apos;s get you started with creating amazing stories using AI</DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="flex items-start gap-4 p-4 rounded-lg border border-border">
@@ -265,7 +264,7 @@ export function SaveDialog({
             <Save className="w-5 h-5 text-primary" />
             Save Your Story
           </DialogTitle>
-          <DialogDescription>Choose how you'd like to save your story.</DialogDescription>
+          <DialogDescription>Choose how you&apos;d like to save your story.</DialogDescription>
         </DialogHeader>
         <div className="py-4">
           <p className="text-sm text-muted-foreground mb-4">

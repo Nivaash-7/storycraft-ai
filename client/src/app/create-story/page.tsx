@@ -1,6 +1,6 @@
 "use client"
-import { useRouter } from "next/navigation"
-import { useAuth, SignedIn, SignedOut, RedirectToSignIn } from "@clerk/nextjs"
+
+import { SignedIn, SignedOut, RedirectToSignIn } from "@clerk/nextjs"
 import { Toaster } from "sonner"
 import { ModernSidebar } from "@/components/ModernSidebar"
 import StoryEditor from "./components/StoryEditor"
@@ -14,12 +14,7 @@ import MobileDeviceCheck from "@/hooks/mobile-device-check"
 import { OnboardingDialog, AITourDialog, SaveDialog, AutosaveWarningDialog } from "./components/Dialogs"
 import './create-story.css'
 
-
 export default function CreateStory() {
-  
-  const router = useRouter()
-  const { userId } = useAuth()
-
   const {
     title,
     setTitle,
@@ -30,7 +25,6 @@ export default function CreateStory() {
     storyContent,
     setStoryContent,
     wordCount,
-    storyId,
     isSubmitting,
     isSaveDialogOpen,
     setIsSaveDialogOpen,
@@ -45,17 +39,14 @@ export default function CreateStory() {
     isAIChatOpen,
     setIsAIChatOpen,
     activeAITab,
-    setActiveAITab,
     showAIFeatureHighlight,
-    hasInteractedWithAI,
     taleWeaverMessage,
     isClicked,
     setIsClicked,
     showTaleWeaverIntro,
-    setShowTaleWeaverIntro,
     openAIAssistant,
     dismissTaleWeaverIntro,
-  } = useAIAssistant(storyContent, setStoryContent)
+  } = useAIAssistant(storyContent) // Removed setStoryContent argument
 
   const { showOnboarding, setShowOnboarding, showAITour, setShowAITour } = useOnboarding()
 
@@ -139,4 +130,3 @@ export default function CreateStory() {
     </>
   )
 }
-

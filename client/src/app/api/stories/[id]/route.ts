@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
-import { Story } from "@/lib/models/Story";
+import { Story, User } from "@/lib/models";
 import { ObjectId, WithId } from "mongodb";
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function PATCH(req: NextRequest, context: { params: Promise<{ id: string }> }) {
+  
+  const { id } = await context.params;
   const { userId, title, genre, content, description, status } = await req.json();
 
   if (!userId || !id) {
@@ -45,8 +46,12 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
 }
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params;
+
+export async function GET(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
 
   if (!id) {
     return NextResponse.json({ error: "id is required" }, { status: 400 });
@@ -67,16 +72,25 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     return NextResponse.json({ ...story, _id: story._id.toString() });
   } catch (error) {
     console.error("Error fetching story:", error);
-    return NextResponse.json({ error: "Failed to fetch story" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch story" },
+      { status: 500 }
+    );
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
   const { userId } = await req.json();
 
   if (!id || !userId) {
-    return NextResponse.json({ error: "id and userId are required" }, { status: 400 });
+    return NextResponse.json(
+      { error: "id and userId are required" },
+      { status: 400 }
+    );
   }
 
   try {
@@ -89,12 +103,16 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     });
 
     if (result.deletedCount === 0) {
-      return NextResponse.json({ error: "Story not found or not authorized" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Story not found or not authorized" },
+        { status: 404 }
+      );
     }
 
-    await db.collection("users").updateOne(
+    // Use the User type for the collection to fix typing issues
+    await db.collection<User>("users").updateOne(
       { userId },
-      { $pull: { publishedStories: new ObjectId(id) as any } } 
+      { $pull: { publishedStories: new ObjectId(id) } }
     );
 
     await db.collection("activities").deleteMany({
@@ -102,9 +120,15 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
       userId,
     });
 
-    return NextResponse.json({ message: "Story deleted successfully" }, { status: 200 });
+    return NextResponse.json(
+      { message: "Story deleted successfully" },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error deleting story:", error);
-    return NextResponse.json({ error: "Failed to delete story" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to delete story" },
+      { status: 500 }
+    );
   }
 }

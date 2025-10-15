@@ -7,7 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   Send,
@@ -46,7 +53,6 @@ export default function AIAssistant({
     setModalContent,
     editedSuggestion,
     setEditedSuggestion,
-    originalSuggestion,
     setOriginalSuggestion,
     feedback,
     isConfirmDialogOpen,
@@ -186,7 +192,7 @@ export default function AIAssistant({
                     <p className="text-sm text-muted-foreground">{tabInstructions[activeTab]}</p>
                     {activeTab === "generate" && (
                       <p className="text-xs text-primary/80 mt-1">
-                        Tip: Generated content will have an "Edit & Use" button to customize before adding to your story.
+                        Tip: Generated content will have an &quot;Edit &amp; Use&quot; button to customize before adding to your story.
                       </p>
                     )}
                     {activeTab === "feedback" && storyContent.length === 0 && (
@@ -235,7 +241,7 @@ export default function AIAssistant({
                       size="sm"
                       className="mt-1 h-auto p-0 text-xs self-start cursor-pointer"
                     >
-                      Edit & Use
+                      Edit &amp; Use
                     </Button>
                   )}
                   {message.isClarification && (
@@ -406,7 +412,7 @@ export default function AIAssistant({
                     Discuss story ideas, ask questions about writing techniques, or just chat about your creative process.
                   </p>
                   <p className="text-sm text-muted-foreground mt-2">
-                    <span className="font-medium">Try asking:</span> "Can you help me develop a character for my story?" or "What are some good plot twists for a mystery?"
+                    <span className="font-medium">Try asking:</span> &quot;Can you help me develop a character for my story?&quot; or &quot;What are some good plot twists for a mystery?&quot;
                   </p>
                 </div>
               </div>
@@ -418,7 +424,7 @@ export default function AIAssistant({
                     Create story snippets, characters, or scenes to add to your story.
                   </p>
                   <p className="text-sm text-muted-foreground mt-2">
-                    <span className="font-medium">Try asking:</span> "Write a scene where my protagonist discovers a hidden door" or "Generate a description of a futuristic city"
+                    <span className="font-medium">Try asking:</span> &quot;Write a scene where my protagonist discovers a hidden door&quot; or &quot;Generate a description of a futuristic city&quot;
                   </p>
                 </div>
               </div>
@@ -430,7 +436,7 @@ export default function AIAssistant({
                     Get constructive feedback on your writing to improve your story.
                   </p>
                   <p className="text-sm text-muted-foreground mt-2">
-                    <span className="font-medium">Try asking:</span> "How can I improve the pacing?" or "Is my dialogue realistic?"
+                    <span className="font-medium">Try asking:</span> &quot;How can I improve the pacing?&quot; or &quot;Is my dialogue realistic?&quot;
                   </p>
                 </div>
               </div>

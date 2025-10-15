@@ -1,8 +1,8 @@
 "use client"
 
 import { useEffect } from "react"
-import { useParams, useRouter } from "next/navigation"
-import { useAuth, SignedIn, SignedOut, RedirectToSignIn } from "@clerk/nextjs"
+import { useParams } from "next/navigation"
+import { SignedIn, SignedOut, RedirectToSignIn } from "@clerk/nextjs"
 import { Toaster } from "sonner"
 import { ModernSidebar } from "@/components/ModernSidebar"
 import StoryEditor from "../../create-story/components/StoryEditor"
@@ -23,8 +23,6 @@ import "./edit-story.css"
 
 export default function EditStoryPage() {
   const { id } = useParams()
-  const { userId } = useAuth()
-  const router = useRouter()
 
   const {
     title,
@@ -44,24 +42,21 @@ export default function EditStoryPage() {
     handleSubmit,
     handleSaveChoice,
     updateWordCount,
-    setStoryId
+    setStoryId,
   } = useStoryActions()
 
   const {
     isAIChatOpen,
     setIsAIChatOpen,
     activeAITab,
-    setActiveAITab,
     showAIFeatureHighlight,
-    hasInteractedWithAI,
     taleWeaverMessage,
     isClicked,
     setIsClicked,
     showTaleWeaverIntro,
-    setShowTaleWeaverIntro,
     openAIAssistant,
     dismissTaleWeaverIntro,
-  } = useAIAssistant(storyContent, setStoryContent)
+  } = useAIAssistant(storyContent) // Removed setStoryContent argument
 
   const { showOnboarding, setShowOnboarding, showAITour, setShowAITour } = useOnboarding()
 
@@ -83,7 +78,7 @@ export default function EditStoryPage() {
     }
 
     if (id) fetchStory()
-  }, [id])
+  }, [id, setTitle, setGenre, setWordCountGoal, setStoryContent, updateWordCount, setStoryId])
 
   return (
     <>
@@ -123,7 +118,7 @@ export default function EditStoryPage() {
 
             <AIAssistantWrapper
               isAIChatOpen={isAIChatOpen}
-              setIsAIChatOpen={setIsAIChatOpen}
+              setIsAIChatOpen={setIsAIChatOpen }
               showTaleWeaverIntro={showTaleWeaverIntro}
               dismissTaleWeaverIntro={dismissTaleWeaverIntro}
               taleWeaverMessage={taleWeaverMessage}

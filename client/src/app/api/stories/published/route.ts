@@ -1,11 +1,12 @@
-import { type NextRequest, NextResponse } from "next/server"
-import clientPromise from "@/lib/mongodb"
-import type { Story } from "@/lib/models/Story"
+import { NextResponse } from "next/server"; // Removed unused NextRequest
+import clientPromise from "@/lib/mongodb";
+import type { Story } from "@/lib/models";
+import { ObjectId } from "mongodb";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
-    const client = await clientPromise
-    const db = client.db("storycraft")
+    const client = await clientPromise;
+    const db = client.db("storycraft");
 
     const stories = await db
       .collection<Story>("stories")
@@ -43,22 +44,22 @@ export async function GET(req: NextRequest) {
           $limit: 100,
         },
       ])
-      .toArray()
+      .toArray();
 
     return NextResponse.json(
       stories.map((story) => ({
         ...story,
         _id: story._id.toString(),
-        likes: story.likes?.map((id: any) => id.toString()) || [],
+        likes: story.likes?.map((id: ObjectId) => id.toString()) || [],
         comments:
-          story.comments?.map((comment: any) => ({
+          story.comments?.map((comment: ObjectId) => ({
             ...comment,
-            _id: comment._id?.toString() || `c${Date.now()}${Math.random()}`,
+            _id: comment.toString() || `c${Date.now()}${Math.random()}`,
           })) || [],
       })),
-    )
+    );
   } catch (error) {
-    console.error("Error fetching published stories:", error)
-    return NextResponse.json({ error: "Failed to fetch stories" }, { status: 500 })
+    console.error("Error fetching published stories:", error);
+    return NextResponse.json({ error: "Failed to fetch stories" }, { status: 500 });
   }
 }

@@ -1,7 +1,7 @@
 "use client"
+
 import { useState, useEffect, useRef } from "react"
 import type React from "react"
-
 import { useParams, useRouter } from "next/navigation"
 import { Heart, Share2, Eye, ArrowLeft, MessageSquare, Send, Calendar, FileText, TrendingUp, Info } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
 import { useUser } from "@clerk/nextjs"
+import type { UserResource } from "@clerk/types"
 import { toast, Toaster } from "sonner"
 import { motion, AnimatePresence } from "framer-motion"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
@@ -46,9 +47,9 @@ const StoryCard = ({
   setStory,
 }: {
   story: Story
-  user: any
-  handleLike: (storyId: string) => Promise<void>
-  handleShare: (storyId: string) => Promise<void>
+  user: UserResource | null
+  handleLike: () => Promise<void>
+  handleShare: () => Promise<void>
   setStory: React.Dispatch<React.SetStateAction<Story | null>>
 }) => {
   const [showingDescription, setShowingDescription] = useState<Set<string>>(new Set())
@@ -59,7 +60,6 @@ const StoryCard = ({
   const commentsRef = useRef<HTMLDivElement>(null)
   const scrollPositions = useRef<Map<string, number>>(new Map())
 
-  // Handle clicks outside the comments section to close it
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -157,7 +157,7 @@ const StoryCard = ({
         },
         body: JSON.stringify({
           userId: user.id,
-          username: user.firstName || "Anonymous",
+          username: user.firstName,
           content: commentContent,
         }),
       })
@@ -199,9 +199,7 @@ const StoryCard = ({
                 <div className="flex flex-wrap items-center gap-3 mb-2">
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <h3 className="font-semibold text-foreground hover:text-primary cursor-pointer transition-colors">
-                        {story.author?.username || "Anonymous"}
-                      </h3>
+                      <h3 className="font-semibold text-foreground hover:text-primary cursor-pointer transition-colors">{story.author?.username}</h3>
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>View author profile</p>
@@ -339,7 +337,7 @@ const StoryCard = ({
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => handleLike(story._id)}
+                    onClick={handleLike}
                     className={`transition-all cursor-pointer ${
                       user?.id && story.likes?.includes(user.id)
                         ? "text-primary bg-primary/10"
@@ -347,7 +345,9 @@ const StoryCard = ({
                     }`}
                   >
                     <Heart
-                      className={`h-4 w-4 mr-2 ${user?.id && story.likes?.includes(user.id) ? "fill-current" : ""}`}
+                      className={`h-4 w-4 mr-2 ${
+                        user?.id && story.likes?.includes(user.id) ? "fill-current" : ""
+                      }`}
                     />
                     {story.likes?.length ?? 0}
                   </Button>
@@ -389,7 +389,7 @@ const StoryCard = ({
                     variant="ghost"
                     size="sm"
                     className="text-muted-foreground hover:text-foreground transition-all cursor-pointer"
-                    onClick={() => handleShare(story._id)}
+                    onClick={handleShare}
                   >
                     <Share2 className="h-4 w-4 mr-2" />
                     Share
@@ -485,9 +485,7 @@ const StoryCard = ({
                     ) : (
                       <div className="text-center py-8">
                         <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-3 opacity-50" />
-                        <p className="text-sm text-muted-foreground">
-                          No comments yet. Be the first to share your thoughts!
-                        </p>
+                        <p className="text-sm text-muted-foreground">No comments yet. Be the first to share your thoughts!</p>
                       </div>
                     )}
                   </div>
@@ -509,13 +507,11 @@ export default function StoryViewPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const storyId = params.id as string
-
   useEffect(() => {
     const fetchStory = async () => {
       try {
         setLoading(true)
-        const response = await fetch(`/api/stories/${storyId}`)
+        const response = await fetch(`/api/stories/${params.id}`)
         if (!response.ok) {
           throw new Error(`Failed to fetch story: ${response.status}`)
         }
@@ -530,12 +526,12 @@ export default function StoryViewPage() {
       }
     }
 
-    if (storyId) {
+    if (params.id) {
       fetchStory()
     }
-  }, [storyId])
+  }, [params.id])
 
-  const handleLike = async (storyId: string) => {
+  const handleLike = async () => {
     if (!user || !story) {
       toast.error("Please sign in to like this story.")
       return
@@ -564,14 +560,14 @@ export default function StoryViewPage() {
     }
   }
 
-  const handleShare = async (storyId: string) => {
+  const handleShare = async () => {
     if (!story) return
 
     if (navigator.share) {
       try {
         await navigator.share({
           title: story.title || "Check out this story!",
-          text: `${story.description || `A great story by ${story.author?.username || "Anonymous"}`}\nRead more here:`,
+          text: `${story.description || `A great story by ${story.author?.username}`}\nRead more here:`,
           url: window.location.href,
         })
         toast.success("Story shared successfully!")
@@ -682,7 +678,7 @@ export default function StoryViewPage() {
               <div className="h-full">
                 <StoryCard
                   story={story}
-                  user={user}
+                  user={user ?? null}
                   handleLike={handleLike}
                   handleShare={handleShare}
                   setStory={setStory}
