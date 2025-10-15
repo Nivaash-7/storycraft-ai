@@ -3,8 +3,11 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 const Hero: React.FC = () => {
+  const router = useRouter();
+
   const [titleNumber, setTitleNumber] = useState(0);
   const titles = useMemo(() => ["Creative", "Immersive", "Interactive", "Personalized", "Innovative"], []);
 
@@ -49,7 +52,10 @@ const Hero: React.FC = () => {
             >
               Discover More
             </Button>
-            <Button className="px-6 py-3 bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer">
+            <Button
+              className="px-6 py-3 bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer"
+              onClick={() => router.push("/create-story")} 
+            >
               Start Writing
             </Button>
           </div>

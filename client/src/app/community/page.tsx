@@ -2,28 +2,7 @@
 import { useState, useEffect } from "react"
 import { toast, Toaster } from "sonner"
 import Community from "./components/Community"
-
-type Story = {
-  _id: string
-  title: string
-  description: string
-  content: string
-  genre: string
-  author: {
-    username: string
-    avatar?: string
-  }
-  publishedAt: string | Date
-  likes: string[]
-  wordCount: number
-  comments: {
-    _id: string
-    userId: string
-    username: string
-    content: string
-    createdAt: string | Date
-  }[]
-}
+import { Story } from "@/lib/models"
 
 export default function CommunityPage() {
   const [stories, setStories] = useState<Story[]>([])
@@ -39,6 +18,7 @@ export default function CommunityPage() {
           throw new Error(`Failed to fetch stories: ${response.status}`)
         }
         const data = await response.json()
+        // Map API response to match Story interface if needed
         setStories(data)
       } catch (err) {
         console.error("Error fetching stories:", err)

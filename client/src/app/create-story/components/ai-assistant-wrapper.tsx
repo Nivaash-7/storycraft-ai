@@ -82,7 +82,10 @@ export default function AIAssistantWrapper({
             </div>
             <div className="flex justify-end">
               <button
-                onClick={() => openAIAssistant()}
+                onClick={() => {
+                  openAIAssistant()
+                  dismissTaleWeaverIntro() // Call dismissTaleWeaverIntro to hide the intro
+                }}
                 className="relative group cursor-pointer"
                 aria-label="Open AI Assistant"
               >

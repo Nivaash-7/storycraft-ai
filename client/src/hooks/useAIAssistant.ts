@@ -29,17 +29,13 @@ export interface AIAssistantProps {
   initialTab?: string;
 }
 
-interface UseAIAssistantProps extends AIAssistantProps {}
-
 export const useAIAssistant = ({
-  isOpen,
-  setIsOpen,
   storyContent,
   setStoryContent,
   title,
   genre,
   initialTab,
-}: UseAIAssistantProps) => {
+}: AIAssistantProps) => {
   const { getToken } = useAuth();
   const [messages, setMessages] = useState<{
     chat: AIMessage[];
@@ -77,7 +73,7 @@ export const useAIAssistant = ({
   const [modalContent, setModalContent] = useState<"feedback" | "suggestion">("suggestion");
   const [editedSuggestion, setEditedSuggestion] = useState<string>("");
   const [originalSuggestion, setOriginalSuggestion] = useState<string>("");
-  const [feedback, setFeedback] = useState<string>("");
+  const [feedback] = useState<string>("");
   const [activeTab, setActiveTab] = useState<MessageTab>(initialTab as MessageTab);
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
@@ -176,14 +172,16 @@ export const useAIAssistant = ({
         const text = await response.text();
         console.error("Raw response:", text);
         const errorData = await response.json().catch(() => ({ error: text }));
-        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+        throw new Error(
+          errorData.error || `HTTP error! status: ${response.status}`
+        );
       }
 
       const text = await response.text();
       try {
         const data = JSON.parse(text);
         return data.content;
-      } catch (e) {
+      } catch {
         console.error("Invalid JSON response:", text);
         throw new Error("Invalid response format from server");
       }
@@ -211,8 +209,10 @@ export const useAIAssistant = ({
           ...prev,
           chat: trimHistory([...prev.chat, newMessage]),
         }));
-      } catch (error: any) {
-        toast.error("Oops!", { description: error.message || "Something slipped up." });
+      } catch (error: unknown) {
+        toast.error("Oops!", {
+          description: (error as Error).message || "Something slipped up.",
+        });
       } finally {
         setIsLoading(false);
       }
@@ -224,7 +224,9 @@ export const useAIAssistant = ({
     async (messageId: number, confirmed: boolean) => {
       const message = messages.generate.find((msg) => msg.id === messageId);
       if (!message || !message.isClarification || !message.clarificationData) {
-        toast.error("Error", { description: "Clarification message not found." });
+        toast.error("Error", {
+          description: "Clarification message not found.",
+        });
         return;
       }
 
@@ -265,8 +267,10 @@ export const useAIAssistant = ({
               },
             },
           });
-        } catch (error: any) {
-          toast.error("Oops!", { description: error.message || "That didn't work." });
+        } catch (error: unknown) {
+          toast.error("Oops!", {
+            description: (error as Error).message || "That didn't work.",
+          });
         } finally {
           setIsLoading(false);
         }
@@ -274,7 +278,8 @@ export const useAIAssistant = ({
         const cancelMessage: AIMessage = {
           id: generateMessageId(),
           role: "assistant",
-          content: "Okay, I won't rewrite that content. What would you like to do next?",
+          content:
+            "Okay, I won't rewrite that content. What would you like to do next?",
           isStoryContent: false,
         };
         setMessages((prev) => ({
@@ -289,7 +294,9 @@ export const useAIAssistant = ({
   const generateStoryContent = useCallback(
     async (userInput: string) => {
       if (isLoading) {
-        toast.error("Hang on!", { description: "I'm still crafting your last idea!" });
+        toast.error("Hang on!", {
+          description: "I'm still crafting your last idea!",
+        });
         return;
       }
       setIsLoading(true);
@@ -343,8 +350,10 @@ export const useAIAssistant = ({
             },
           });
         }
-      } catch (error: any) {
-        toast.error("Oops!", { description: error.message || "That didn't work." });
+      } catch (error: unknown) {
+        toast.error("Oops!", {
+          description: (error as Error).message || "That didn't work.",
+        });
       } finally {
         setIsLoading(false);
       }
@@ -355,7 +364,9 @@ export const useAIAssistant = ({
   const getStoryFeedback = useCallback(
     async (userInput: string) => {
       if (isLoading) {
-        toast.error("Hang on!", { description: "I'm still looking at your last draft!" });
+        toast.error("Hang on!", {
+          description: "I'm still looking at your last draft!",
+        });
         return;
       }
       setIsLoading(true);
@@ -377,8 +388,10 @@ export const useAIAssistant = ({
           feedback: trimHistory([...prev.feedback, newMessage]),
         }));
         toast.success("Feedback ready!");
-      } catch (error: any) {
-        toast.error("Oops!", { description: error.message || "Couldn't review that." });
+      } catch (error: unknown) {
+        toast.error("Oops!", {
+          description: (error as Error).message || "Couldn't review that.",
+        });
       } finally {
         setIsLoading(false);
       }
@@ -418,11 +431,21 @@ export const useAIAssistant = ({
             await getStoryFeedback(input);
             break;
         }
-      } catch (error: any) {
-        toast.error("Error", { description: error.message || "Something slipped up." });
+      } catch (error: unknown) {
+        toast.error("Error", {
+          description: (error as Error).message || "Something slipped up.",
+        });
       }
     },
-    [input, activeTab, handleNormalChat, generateStoryContent, getStoryFeedback, validateInput, generateMessageId]
+    [
+      input,
+      activeTab,
+      handleNormalChat,
+      generateStoryContent,
+      getStoryFeedback,
+      validateInput,
+      generateMessageId,
+    ]
   );
 
   const insertSuggestion = useCallback(
@@ -434,7 +457,11 @@ export const useAIAssistant = ({
         ...prev,
         generate: prev.generate.map((msg) =>
           msg.content === originalSuggestion
-            ? { ...msg, isInsertable: false, content: `${msg.content} (Inserted)` }
+            ? {
+                ...msg,
+                isInsertable: false,
+                content: `${msg.content} (Inserted)`,
+              }
             : msg
         ),
       }));
@@ -458,16 +485,19 @@ export const useAIAssistant = ({
   }, []);
 
   const handleModalClose = useCallback(() => {
-    if (modalContent === "suggestion" && editedSuggestion !== originalSuggestion) {
+    if (
+      modalContent === "suggestion" &&
+      editedSuggestion !== originalSuggestion
+    ) {
       setIsConfirmDialogOpen(true);
     } else {
       setIsModalOpen(false);
     }
   }, [modalContent, editedSuggestion, originalSuggestion]);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
+  const handleKeyDown = (_e: React.KeyboardEvent) => {
+    if (_e.key === "Enter" && !_e.shiftKey) {
+      _e.preventDefault();
       handleChatSubmit();
     }
   };
@@ -480,9 +510,10 @@ export const useAIAssistant = ({
     if (inputRef.current && !isLoading) inputRef.current.focus();
   }, [isLoading, activeTab]);
 
+  const currentMessages = messages[activeTab];
   useEffect(() => {
     scrollToBottom();
-  }, [messages[activeTab], scrollToBottom]);
+  }, [currentMessages, scrollToBottom]);
 
   return {
     messages,

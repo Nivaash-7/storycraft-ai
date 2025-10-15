@@ -3,7 +3,7 @@ import { redirect } from "next/navigation"
 import { ModernSidebar } from "@/components/ModernSidebar"
 import MyStoriesContent from "@/components/MyStoriesContent"
 import clientPromise from "@/lib/mongodb"
-import type { Story } from "@/lib/models/Story"
+import type { Story } from "@/lib/models"
 
 export default async function MyStoriesPage() {
   const user = await currentUser()
@@ -22,9 +22,9 @@ export default async function MyStoriesPage() {
     id: story._id.toString(),
     title: story.title,
     status: story.status,
-    lastEdited: story.lastEdited.toISOString(),
-    createdAt: story.createdAt.toISOString(),
-    publishedAt: story.publishedAt?.toISOString(),
+    lastEdited: story.lastEdited.toString(),
+    createdAt: story.createdAt.toString(),
+    publishedAt: story.publishedAt?.toString(),
     wordCount: story.wordCount,
     genre: story.genre,
     description: story.description,

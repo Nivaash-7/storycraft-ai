@@ -11,7 +11,7 @@ import {
   ChevronsUpDownIcon,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { SignOutButton, UserButton, useUser, useClerk } from "@clerk/nextjs";
+import { SignOutButton, UserButton, useUser } from "@clerk/nextjs";
 import {
   Sidebar,
   SidebarContent,
@@ -43,7 +43,6 @@ interface AppSidebarProps {
 function AppSidebar({ className }: AppSidebarProps) {
   const router = useRouter();
   const { user } = useUser();
-  const { redirectToUserProfile } = useClerk();
   const { setOpen, open, isMobile } = useSidebar();
 
   const handleMouseEnter = () => {
@@ -133,9 +132,9 @@ function AppSidebar({ className }: AppSidebarProps) {
           </SidebarMenu>
         </SidebarHeader>
 
-        <SidebarContent className=" mt-10 py-1">
+        <SidebarContent className="mt-10 py-1">
           <SidebarGroup>
-            <SidebarGroupLabel className=" py-1 text-xs text-sidebar-accent-foreground">
+            <SidebarGroupLabel className="py-1 text-xs text-sidebar-accent-foreground">
               Home
             </SidebarGroupLabel>
             <SidebarGroupContent>
@@ -288,7 +287,6 @@ interface ModernSidebarProps {
 
 export function ModernSidebar({ children }: ModernSidebarProps) {
   const [open, setOpen] = React.useState(false);
-  const router = useRouter();
 
   return (
     <SidebarProvider open={open} onOpenChange={setOpen}>
@@ -306,7 +304,6 @@ export function ModernSidebar({ children }: ModernSidebarProps) {
 function MobileNavbar() {
   const { isMobile } = useSidebar();
   const router = useRouter();
-  const { user } = useUser();
 
   const mobileNavItems = [
     {
