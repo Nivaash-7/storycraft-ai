@@ -32,7 +32,6 @@ export async function POST(req: NextRequest) {
   try {
     event = wh.verify(payload, headers) as ClerkEvent;
   } catch {
-    // Remove unused variable error by omitting error variable
     return NextResponse.json({ error: "Invalid webhook signature" }, { status: 400 });
   }
 
@@ -60,7 +59,6 @@ export async function POST(req: NextRequest) {
       const result = await usersCollection.insertOne(userDoc);
       console.log("User inserted with ID:", result.insertedId);
 
-      // Strict error handling: no any
       return NextResponse.json({ message: "User saved", _id: result.insertedId });
     } catch (error: unknown) {
       const errMsg = error instanceof Error ? error.message : "Unknown error";

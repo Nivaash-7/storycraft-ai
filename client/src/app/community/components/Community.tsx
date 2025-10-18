@@ -64,7 +64,6 @@ const genres = [
   "Thriller",
 ];
 
-// Helper functions
 const toIdString = (id: string | ObjectId): string =>
   typeof id === "string" ? id : id.toString();
 
@@ -187,7 +186,6 @@ const Community = ({ stories, loading, error, setStories }: CommunityProps) => {
 
       const updatedStory = await response.json();
 
-      // Preserve author info if missing in updatedStory
       const oldStory = stories.find((s) => toIdString(s._id) === storyId);
       const mergedStory = {
         ...updatedStory,

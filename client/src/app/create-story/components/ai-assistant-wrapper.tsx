@@ -84,7 +84,7 @@ export default function AIAssistantWrapper({
               <button
                 onClick={() => {
                   openAIAssistant()
-                  dismissTaleWeaverIntro() // Call dismissTaleWeaverIntro to hide the intro
+                  dismissTaleWeaverIntro() 
                 }}
                 className="relative group cursor-pointer"
                 aria-label="Open AI Assistant"

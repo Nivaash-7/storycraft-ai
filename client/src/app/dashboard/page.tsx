@@ -41,7 +41,6 @@ export default async function Dashboard() {
 
 const formattedActivities = activities.map((activity) => {
   const activityDate = new Date(activity.createdAt);
-  // Explicitly type istOptions as Intl.DateTimeFormatOptions
   const istOptions: Intl.DateTimeFormatOptions = {
     timeZone: 'Asia/Kolkata',
     hour: "2-digit",

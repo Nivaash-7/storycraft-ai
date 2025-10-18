@@ -5,7 +5,7 @@ import {
   AIAssistantProps,
   AIMessage,
   MessageTab,
-} from "@/hooks/useAIAssistant"; // Updated import
+} from "@/hooks/useAIAssistant"; 
 import { useAIAssistant } from "@/hooks/useAIAssistant";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -108,7 +108,6 @@ export default function AIAssistant({
           className
         )}
       >
-        {/* Card Header */}
         <CardHeader className="flex flex-row items-center p-4 space-y-0 border-b">
           <div className="flex items-center gap-2">
             <Image
@@ -173,7 +172,6 @@ export default function AIAssistant({
           </div>
         </CardHeader>
 
-        {/* Tabs */}
         <div className="border-b">
           <div className="flex">
             {(["chat", "generate", "feedback"] as MessageTab[]).map((tab) => (
@@ -194,7 +192,6 @@ export default function AIAssistant({
           </div>
         </div>
 
-        {/* Messages */}
         <CardContent className="flex-1 p-0 overflow-hidden">
           <div
             ref={scrollAreaRef}
@@ -348,7 +345,6 @@ export default function AIAssistant({
           </div>
         </CardContent>
 
-        {/* Input */}
         <CardFooter className="border-t p-4">
           <form
             onSubmit={handleChatSubmit}
@@ -383,7 +379,6 @@ export default function AIAssistant({
         </CardFooter>
       </Card>
 
-      {/* Edit Modal */}
       {isModalOpen && (
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
           <DialogContent className="sm:max-w-[600px] max-h-[80vh] flex flex-col">
@@ -451,7 +446,6 @@ export default function AIAssistant({
         </Dialog>
       )}
 
-      {/* Confirm Modal */}
       <Dialog open={isConfirmDialogOpen} onOpenChange={setIsConfirmDialogOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
@@ -483,7 +477,6 @@ export default function AIAssistant({
         </DialogContent>
       </Dialog>
 
-      {/* Tutorial Modal */}
       <Dialog open={showTutorial} onOpenChange={setShowTutorial}>
         <DialogContent
           className={cn(

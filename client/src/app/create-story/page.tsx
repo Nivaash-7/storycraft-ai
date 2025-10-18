@@ -46,7 +46,7 @@ export default function CreateStory() {
     showTaleWeaverIntro,
     openAIAssistant,
     dismissTaleWeaverIntro,
-  } = useAIAssistant(storyContent) // Removed setStoryContent argument
+  } = useAIAssistant(storyContent)
 
   const { showOnboarding, setShowOnboarding, showAITour, setShowAITour } = useOnboarding()
 
@@ -105,7 +105,6 @@ export default function CreateStory() {
               activeAITab={activeAITab}
             />
 
-            {/* Dialogs */}
             <OnboardingDialog showOnboarding={showOnboarding} setShowOnboarding={setShowOnboarding} />
 
             <AITourDialog showAITour={showAITour} setShowAITour={setShowAITour} openAIAssistant={openAIAssistant} />

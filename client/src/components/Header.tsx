@@ -6,7 +6,6 @@ import { LogIn, Home, Group, LayoutDashboard } from "lucide-react";
 import { UserButton, useAuth } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 
-// NavLink and DockItem interfaces
 interface NavLink {
   name: string;
   href: string;
@@ -21,7 +20,6 @@ type DockItem = {
   requiresAuth?: boolean;
 };
 
-// Type guard to check if an item is DockItem
 function isDockItem(item: unknown): item is DockItem {
   return typeof item === "object" && item !== null && "title" in item;
 }
@@ -67,7 +65,6 @@ const Header = () => {
 
   return (
     <>
-      {/* Desktop header with site title and user button */}
       <header className="relative flex items-center justify-between px-4 py-3 bg-background sm:px-6 sm:py-4 lg:px-6 lg:py-4">
         <div className="hidden lg:block text-3xl font-bold text-primary tracking-tight sm:text-3xl lg:text-4xl">
           <Link href="/" aria-label="StoryCraft Home">
@@ -112,7 +109,6 @@ const Header = () => {
         </div>
       </header>
 
-      {/* Render MobileDock only on mobile devices after mount */}
       {mounted && isMobile && <MobileDock />}
     </>
   );
@@ -134,7 +130,6 @@ const MobileDock = () => {
     })),
   ];
 
-  // Add user button or sign-in button at the end based on sign-in status
   if (isSignedIn) {
     dockItems.push({ isUserButton: true });
   } else {
@@ -151,7 +146,6 @@ const MobileDock = () => {
         <div className="flex items-center justify-around h-16">
           {dockItems.map((item) => {
             if ("isUserButton" in item && item.isUserButton) {
-              // Render Clerk UserButton (no label)
               return (
                 <div
                   key="user-button"
@@ -170,7 +164,6 @@ const MobileDock = () => {
                 </div>
               );
             } else if ("isSignInButton" in item && item.isSignInButton) {
-              // Render sign-in button icon with label
               return (
                 <div
                   key="sign-in-button"
@@ -189,7 +182,6 @@ const MobileDock = () => {
                 </div>
               );
             } else if (isDockItem(item)) {
-              // Safe to access DockItem properties
               return (
                 <div
                   key={item.title}

@@ -172,7 +172,6 @@ export default function DashboardContent({ firstName, stories: initialStories, a
         }}
       />
       <div className="flex h-full w-full flex-1 flex-col gap-4 sm:gap-6 md:gap-8 p-3 sm:p-4 md:p-6 lg:p-8 bg-background">
-        {/* Welcome back section */}
         <motion.section
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -195,7 +194,6 @@ export default function DashboardContent({ firstName, stories: initialStories, a
           </div>
         </motion.section>
 
-        {/* Your Writing Journey section */}
         <motion.section variants={containerVariants} initial="hidden" animate="visible" className="mb-6 md:mb-8">
           <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-foreground mb-3 sm:mb-4">
             Your Writing Journey
@@ -277,7 +275,6 @@ export default function DashboardContent({ firstName, stories: initialStories, a
           </div>
         </motion.section>
 
-        {/* Quick Start section */}
         <motion.section
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -306,7 +303,6 @@ export default function DashboardContent({ firstName, stories: initialStories, a
           </div>
         </motion.section>
 
-        {/* Recent Activity and Your Stories sections */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
           <motion.section variants={containerVariants} initial="hidden" animate="visible" className="lg:col-span-1">
             <Card className="h-full shadow-md bg-card border-border">

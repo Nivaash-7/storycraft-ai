@@ -61,7 +61,7 @@ export function FeatureSteps({
         <h2
           className={cn(
             "text-3xl md:text-4xl lg:text-5xl font-bold mb-10 sm:mb-14 md:mb-20 lg:mb-24 xl:mb-28 text-center text-foreground",
-            titleClassName // Apply titleClassName here
+            titleClassName 
           )}
         >
           {title}

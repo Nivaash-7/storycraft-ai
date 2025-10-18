@@ -11,7 +11,6 @@ export default function SignInPage() {
   const { signOut } = useClerk();
   const { isLoaded } = useAuth();
 
-  // Loading state
   if (!isLoaded) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -60,7 +59,6 @@ export default function SignInPage() {
       <div className="w-full max-w-6xl">
         <Card className="bg-background py-0 overflow-hidden rounded-[20px] md:rounded-[30px] shadow-md border border-border/50 h-full">
           <div className="grid min-h-[500px] md:min-h-[600px] lg:min-h-[700px] lg:grid-cols-2 h-full">
-            {/* Left Side - Branding */}
             <div className="brand-side relative m-0 rounded-none bg-black/10 text-white border-r border-gray-700 h-full hidden lg:block">
               <div className="p-4 sm:p-6 md:p-12 flex flex-col h-full">
                 <div>
@@ -112,7 +110,6 @@ export default function SignInPage() {
               </div>
             </div>
 
-            {/* Right Side - Clerk SignIn */}
             <div className="relative flex flex-col justify-center p-6 md:p-12 lg:p-10 h-full bg-white w-full">
               <div className="mx-auto w-full max-w-md">
                 <SignIn

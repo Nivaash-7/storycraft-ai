@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server"; // Removed unused NextRequest
+import { NextResponse } from "next/server"; 
 import clientPromise from "@/lib/mongodb";
 import type { Story } from "@/lib/models";
 import { ObjectId } from "mongodb";

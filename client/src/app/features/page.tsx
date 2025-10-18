@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 export default function FeaturesPage() {
   return (
     <main className="min-h-screen bg-background text-foreground">
-      {/* Hero Section */}
+
       <section className="relative overflow-hidden px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-5xl">
           <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2">
@@ -56,7 +56,6 @@ export default function FeaturesPage() {
         </div>
       </section>
 
-      {/* AI Writing Modes - Featured Section */}
       <section className="border-t border-border px-4 py-20 sm:px-6 lg:px-8 bg-card/30">
         <div className="mx-auto max-w-5xl">
           <div className="mb-12">
@@ -69,7 +68,6 @@ export default function FeaturesPage() {
           </div>
 
           <div className="grid gap-6 md:grid-cols-3">
-            {/* Generate */}
             <div className="group relative overflow-hidden rounded-lg border border-border bg-background p-8 transition-all hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10">
               <div className="mb-6 inline-flex rounded-lg bg-primary/10 p-4">
                 <Sparkles className="h-6 w-6 text-primary" />
@@ -84,7 +82,6 @@ export default function FeaturesPage() {
               </p>
             </div>
 
-            {/* Chat */}
             <div className="group relative overflow-hidden rounded-lg border border-border bg-background p-8 transition-all hover:border-secondary/50 hover:shadow-lg hover:shadow-secondary/10">
               <div className="mb-6 inline-flex rounded-lg bg-secondary/10 p-4">
                 <MessageSquare className="h-6 w-6 text-secondary" />
@@ -96,7 +93,6 @@ export default function FeaturesPage() {
               </p>
             </div>
 
-            {/* Feedback */}
             <div className="group relative overflow-hidden rounded-lg border border-border bg-background p-8 transition-all hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10">
               <div className="mb-6 inline-flex rounded-lg bg-primary/10 p-4">
                 <Lightbulb className="h-6 w-6 text-primary" />
@@ -113,7 +109,6 @@ export default function FeaturesPage() {
         </div>
       </section>
 
-      {/* Community Features */}
       <section className="border-t border-border px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-5xl">
           <div className="mb-12">
@@ -126,7 +121,6 @@ export default function FeaturesPage() {
           </div>
 
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {/* Publish */}
             <div className="rounded-lg border border-border bg-background p-6 transition-all hover:border-primary/50">
               <div className="mb-4 inline-flex rounded-lg bg-primary/10 p-3">
                 <Share2 className="h-5 w-5 text-primary" />
@@ -139,7 +133,6 @@ export default function FeaturesPage() {
               </p>
             </div>
 
-            {/* Draft */}
             <div className="rounded-lg border border-border bg-background p-6 transition-all hover:border-secondary/50">
               <div className="mb-4 inline-flex rounded-lg bg-secondary/10 p-3">
                 <Lock className="h-5 w-5 text-secondary" />
@@ -152,7 +145,6 @@ export default function FeaturesPage() {
               </p>
             </div>
 
-            {/* Like */}
             <div className="rounded-lg border border-border bg-background p-6 transition-all hover:border-primary/50">
               <div className="mb-4 inline-flex rounded-lg bg-primary/10 p-3">
                 <Heart className="h-5 w-5 text-primary" />
@@ -165,7 +157,6 @@ export default function FeaturesPage() {
               </p>
             </div>
 
-            {/* Comment */}
             <div className="rounded-lg border border-border bg-background p-6 transition-all hover:border-secondary/50">
               <div className="mb-4 inline-flex rounded-lg bg-secondary/10 p-3">
                 <MessageCircle className="h-5 w-5 text-secondary" />
@@ -181,7 +172,6 @@ export default function FeaturesPage() {
         </div>
       </section>
 
-      {/* Story Management */}
       <section className="border-t border-border px-4 py-20 sm:px-6 lg:px-8 bg-card/30">
         <div className="mx-auto max-w-5xl">
           <div className="mb-12">
@@ -194,7 +184,6 @@ export default function FeaturesPage() {
           </div>
 
           <div className="grid gap-8 md:grid-cols-2">
-            {/* Features List */}
             <div className="rounded-lg border border-border bg-background p-8">
               <div className="mb-6 inline-flex rounded-lg bg-primary/10 p-3">
                 <Edit3 className="h-5 w-5 text-primary" />
@@ -230,7 +219,6 @@ export default function FeaturesPage() {
               </ul>
             </div>
 
-            {/* Journey Steps */}
             <div className="rounded-lg border border-border bg-background p-8">
               <h3 className="mb-6 text-xl font-bold text-foreground">
                 Your Creative Journey
@@ -288,7 +276,6 @@ export default function FeaturesPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="border-t border-border px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="mb-4 text-4xl font-bold text-foreground">

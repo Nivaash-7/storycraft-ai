@@ -48,7 +48,6 @@ export async function PATCH(
       return NextResponse.json({ error: "Story not found" }, { status: 404 });
     }
 
-    // ATTACH AUTHOR INFO FOR UI Consistency
     const user = await db.collection<User>("users").findOne({ userId });
     const author = user
       ? { username: user.username || "Anonymous", avatar: user.avatar }
@@ -64,7 +63,7 @@ export async function PATCH(
   }
 }
 
-// GET SINGLE STORY (with AUTHOR info)
+// GET SINGLE STORY
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -78,7 +77,6 @@ export async function GET(
     const client = await clientPromise;
     const db = client.db();
 
-    // Use aggregation to attach author info
     const storyArr = await db.collection<Story>("stories").aggregate([
       {
         $match: { _id: new ObjectId(id) },
@@ -117,7 +115,6 @@ export async function GET(
       return NextResponse.json({ error: "Story not found" }, { status: 404 });
     }
 
-    // Normalize IDs for front-end
     return NextResponse.json({
       ...story,
       _id: story._id.toString(),

@@ -292,7 +292,7 @@ export function ModernSidebar({ children }: ModernSidebarProps) {
       <AppSidebar />
       <SidebarInset>
         <main 
-          className="flex-1 overflow-auto bg-background text-foreground relative pb-0" // Changed pb-16 to pb-0
+          className="flex-1 overflow-auto bg-background text-foreground relative pb-0" 
         >
           {children}
           <MobileNavbar />
@@ -335,7 +335,7 @@ function MobileNavbar() {
 
   return (
     <nav 
-      className="fixed bottom-0 left-0 right-0 bg-background text-sidebar-foreground border-t border-sidebar-border flex justify-around items-center h-16 md:hidden z-10 p-0 m-0" // Removed default padding and margin
+      className="fixed bottom-0 left-0 right-0 bg-background text-sidebar-foreground border-t border-sidebar-border flex justify-around items-center h-16 md:hidden z-10 p-0 m-0" 
     >
       {mobileNavItems.map((item, index) => (
         <button
