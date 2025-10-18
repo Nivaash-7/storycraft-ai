@@ -18,7 +18,6 @@ export default function CommunityPage() {
           throw new Error(`Failed to fetch stories: ${response.status}`)
         }
         const data = await response.json()
-        // Map API response to match Story interface if needed
         setStories(data)
       } catch (err) {
         console.error("Error fetching stories:", err)

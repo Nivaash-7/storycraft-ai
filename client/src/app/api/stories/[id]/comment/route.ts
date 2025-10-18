@@ -8,7 +8,7 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const { userId, username, content } = await req.json();
+  const { userId, username, content, avatar } = await req.json();
 
   if (!userId || !content || !id) {
     return NextResponse.json(
@@ -19,7 +19,7 @@ export async function POST(
 
   try {
     const client = await clientPromise;
-    const db = client.db("storycraft");
+    const db = client.db();
 
     const story = await db
       .collection<Story>("stories")
@@ -34,6 +34,7 @@ export async function POST(
       userId,
       username,
       content,
+      avatar,
       createdAt: new Date(),
     };
 

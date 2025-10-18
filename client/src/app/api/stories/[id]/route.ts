@@ -1,20 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
-import { Story, User } from "@/lib/models";
+import { Story, User, Comment } from "@/lib/models";
 import { ObjectId, WithId } from "mongodb";
 
-export async function PATCH(req: NextRequest, context: { params: Promise<{ id: string }> }) {
-  
+
+export async function PATCH(
+  req: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
   const { id } = await context.params;
   const { userId, title, genre, content, description, status } = await req.json();
 
   if (!userId || !id) {
-    return NextResponse.json({ error: "userId and id are required" }, { status: 400 });
+    return NextResponse.json(
+      { error: "userId and id are required" },
+      { status: 400 }
+    );
   }
 
   try {
     const client = await clientPromise;
-    const db = client.db("storycraft");
+    const db = client.db();
 
     const updateData: Partial<Story> = {
       title,
@@ -24,7 +30,10 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
       wordCount: content?.split(/\s+/).filter(Boolean).length || 0,
       updatedAt: new Date(),
       lastEdited: new Date(),
-      ...(status && { status, publishedAt: status === "Published" ? new Date() : undefined }),
+      ...(status && {
+        status,
+        publishedAt: status === "Published" ? new Date() : undefined,
+      }),
     };
 
     const result: WithId<Story> | null = await db
@@ -39,37 +48,83 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
       return NextResponse.json({ error: "Story not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ ...result, _id: result._id.toString() });
+    const user = await db.collection<User>("users").findOne({ userId });
+    const author = user
+      ? { username: user.username || "Anonymous", avatar: user.avatar }
+      : { username: "Anonymous" };
+
+    return NextResponse.json({ ...result, _id: result._id.toString(), author });
   } catch (error) {
     console.error("Error updating story:", error);
-    return NextResponse.json({ error: "Failed to update story" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to update story" },
+      { status: 500 }
+    );
   }
 }
 
-
+// GET SINGLE STORY
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-
   if (!id) {
     return NextResponse.json({ error: "id is required" }, { status: 400 });
   }
 
   try {
     const client = await clientPromise;
-    const db = client.db("storycraft");
+    const db = client.db();
 
-    const story = await db.collection<Story>("stories").findOne({
-      _id: new ObjectId(id),
-    });
+    const storyArr = await db.collection<Story>("stories").aggregate([
+      {
+        $match: { _id: new ObjectId(id) },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "userId",
+          foreignField: "userId",
+          as: "authorInfo",
+        },
+      },
+      {
+        $addFields: {
+          author: {
+            username: {
+              $ifNull: [
+                { $arrayElemAt: ["$authorInfo.username", 0] },
+                "Anonymous",
+              ],
+            },
+            avatar: { $arrayElemAt: ["$authorInfo.avatar", 0] },
+          },
+        },
+      },
+      {
+        $project: {
+          authorInfo: 0,
+        },
+      },
+    ]).toArray();
+
+    const story = storyArr[0];
 
     if (!story) {
       return NextResponse.json({ error: "Story not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ ...story, _id: story._id.toString() });
+    return NextResponse.json({
+      ...story,
+      _id: story._id.toString(),
+      likes: story.likes?.map((id: ObjectId) => id.toString()) || [],
+      comments:
+        story.comments?.map((comment: Comment) => ({
+          ...comment,
+          _id: typeof comment._id === "object" ? (comment._id as ObjectId).toString() : comment._id,
+        })) || [],
+    });
   } catch (error) {
     console.error("Error fetching story:", error);
     return NextResponse.json(
@@ -79,6 +134,7 @@ export async function GET(
   }
 }
 
+// DELETE STORY
 export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -95,7 +151,7 @@ export async function DELETE(
 
   try {
     const client = await clientPromise;
-    const db = client.db("storycraft");
+    const db = client.db();
 
     const result = await db.collection<Story>("stories").deleteOne({
       _id: new ObjectId(id),
@@ -109,11 +165,9 @@ export async function DELETE(
       );
     }
 
-    // Use the User type for the collection to fix typing issues
-    await db.collection<User>("users").updateOne(
-      { userId },
-      { $pull: { publishedStories: new ObjectId(id) } }
-    );
+    await db
+      .collection<User>("users")
+      .updateOne({ userId }, { $pull: { publishedStories: new ObjectId(id) } });
 
     await db.collection("activities").deleteMany({
       storyId: new ObjectId(id),

@@ -4,7 +4,6 @@ import {
   Book,
   Home,
   LayoutDashboard,
-  BookOpen,
   PlusCircle,
   LogOut,
   Group,
@@ -75,7 +74,7 @@ function AppSidebar({ className }: AppSidebarProps) {
     },
     {
       title: "My Stories",
-      icon: BookOpen,
+      icon: Book,
       url: "/my-stories",
       onClick: () => router.push("/my-stories"),
     },
@@ -292,7 +291,9 @@ export function ModernSidebar({ children }: ModernSidebarProps) {
     <SidebarProvider open={open} onOpenChange={setOpen}>
       <AppSidebar />
       <SidebarInset>
-        <main className="flex-1 overflow-auto bg-background text-foreground relative">
+        <main 
+          className="flex-1 overflow-auto bg-background text-foreground relative pb-0" 
+        >
           {children}
           <MobileNavbar />
         </main>
@@ -313,10 +314,10 @@ function MobileNavbar() {
       onClick: () => router.push("/"),
     },
     {
-      title: "Dashboard",
-      icon: LayoutDashboard,
-      url: "/dashboard",
-      onClick: () => router.push("/dashboard"),
+      title: "MyStories",
+      icon: Book,
+      url: "/my-stories",
+      onClick: () => router.push("/my-stories"),
     },
     {
       title: "Community",
@@ -333,12 +334,14 @@ function MobileNavbar() {
   if (!isMobile) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-background text-sidebar-foreground border-t border-sidebar-border flex justify-around items-center h-16 md:hidden">
+    <nav 
+      className="fixed bottom-0 left-0 right-0 bg-background text-sidebar-foreground border-t border-sidebar-border flex justify-around items-center h-16 md:hidden z-10 p-0 m-0" 
+    >
       {mobileNavItems.map((item, index) => (
         <button
           key={index}
           onClick={item.onClick}
-          className="flex flex-col items-center justify-center flex-1 h-full hover:bg-sidebar-accent"
+          className="flex flex-col items-center justify-center flex-1 h-full hover:bg-sidebar-accent p-0 m-0" 
           aria-label={item.title}
         >
           {item.icon === UserButton ? (
@@ -353,7 +356,7 @@ function MobileNavbar() {
           ) : (
             <item.icon className="h-6 w-6" />
           )}
-          <span className="text-xs mt-1">{item.title}</span>
+          <span className="text-xs mt-1 p-0 m-0">{item.title}</span>
         </button>
       ))}
     </nav>

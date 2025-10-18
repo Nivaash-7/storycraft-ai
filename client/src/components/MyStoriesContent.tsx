@@ -101,11 +101,10 @@ export default function MyStoriesContent({
     title: string;
   } | null>(null);
 
-  // Dynamic stories per page based on view mode
   const storiesPerPage = viewMode === "list" ? 3 : 6;
 
   useEffect(() => {
-    setCurrentPage(1); // Reset to page 1 when filters or view mode change
+    setCurrentPage(1);
   }, [searchQuery, filterStatus, filterGenre, viewMode]);
 
   const genres = useMemo(() => {
@@ -182,7 +181,7 @@ export default function MyStoriesContent({
 
   const formatRelativeTime = (dateString: string) => {
     const date = new Date(dateString);
-    const now = new Date("2025-07-01T13:06:00+05:30"); // Updated to current time
+    const now = new Date("2025-07-01T13:06:00+05:30");
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
     if (diffInSeconds < 60) return "Just now";
@@ -467,7 +466,6 @@ export default function MyStoriesContent({
         }}
       />
 
-      {/* Header */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4 max-sm:flex-col max-sm:gap-4">
           <div>
@@ -488,11 +486,9 @@ export default function MyStoriesContent({
         </div>
       </div>
 
-      {/* Filters and Controls */}
       <Card className="mb-6 bg-card/50 backdrop-blur-sm">
         <CardContent className="p-4">
           <div className="flex flex-col lg:flex-row gap-4 max-sm:gap-3 max-sm:flex-col">
-            {/* Search */}
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -503,7 +499,6 @@ export default function MyStoriesContent({
               />
             </div>
 
-            {/* Filters */}
             <div className="flex flex-wrap gap-2 max-sm:gap-1">
               <Select
                 value={filterStatus}
@@ -607,7 +602,6 @@ export default function MyStoriesContent({
         </CardContent>
       </Card>
 
-      {/* Stories */}
       <div className="mb-4 flex items-center justify-between">
         <p className="text-sm max-sm:text-xs text-muted-foreground">
           Showing {Math.min(currentStories.length, storiesPerPage)} of{" "}
@@ -653,7 +647,6 @@ export default function MyStoriesContent({
             )}
           </div>
 
-          {/* Pagination Controls */}
           {totalPages > 1 && (
             <div className="py-8 flex justify-center">
               <Pagination>
@@ -712,7 +705,6 @@ export default function MyStoriesContent({
         </>
       )}
 
-      {/* Delete Confirmation Dialog */}
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DialogContent className="sm:max-w-md max-sm:w-[90vw] bg-card text-foreground border-border rounded-lg shadow-lg">
           <DialogHeader>

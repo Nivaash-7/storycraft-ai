@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { Github, Instagram, Twitter, Mail } from "lucide-react";
+import { Github, Mail } from "lucide-react";
 
 interface FooterProps {
   className?: string;
@@ -104,17 +104,7 @@ export function Footer({ className }: FooterProps) {
               <span className="absolute -bottom-1 left-0 w-1/2 h-1 bg-gradient-to-r from-primary to-transparent" />
             </h4>
             <div className="flex space-x-4">
-              <Link href="https://twitter.com" target="_blank" rel="noopener noreferrer">
-                <motion.div whileHover={{ scale: 1.2 }} transition={{ type: "spring", stiffness: 300 }}>
-                  <Twitter className="h-6 w-6 text-muted-foreground hover:text-primary" />
-                </motion.div>
-              </Link>
-              <Link href="https://instagram.com" target="_blank" rel="noopener noreferrer">
-                <motion.div whileHover={{ scale: 1.2 }} transition={{ type: "spring", stiffness: 300 }}>
-                  <Instagram className="h-6 w-6 text-muted-foreground hover:text-primary" />
-                </motion.div>
-              </Link>
-              <Link href="https://github.com" target="_blank" rel="noopener noreferrer">
+              <Link href="https://github.com/Nivaash-7/storycraft-ai.git" target="_blank" rel="noopener noreferrer">
                 <motion.div whileHover={{ scale: 1.2 }} transition={{ type: "spring", stiffness: 300 }}>
                   <Github className="h-6 w-6 text-muted-foreground hover:text-primary" />
                 </motion.div>

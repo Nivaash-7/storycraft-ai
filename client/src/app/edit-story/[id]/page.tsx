@@ -56,7 +56,7 @@ export default function EditStoryPage() {
     showTaleWeaverIntro,
     openAIAssistant,
     dismissTaleWeaverIntro,
-  } = useAIAssistant(storyContent) // Removed setStoryContent argument
+  } = useAIAssistant(storyContent) 
 
   const { showOnboarding, setShowOnboarding, showAITour, setShowAITour } = useOnboarding()
 

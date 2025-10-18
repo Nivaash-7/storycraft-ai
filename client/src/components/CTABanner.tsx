@@ -32,19 +32,10 @@ export function CTABanner({ className }: CTABannerProps) {
             Share your stories, connect with others, and inspire the world.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link href="/signup">
+            <Link href="/community">
               <Button
                 size="lg"
                 className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-6 cursor-pointer"
-              >
-                Join Now
-              </Button>
-            </Link>
-            <Link href="/stories">
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-primary text-primary hover:bg-primary hover:text-primary-foreground rounded-full px-6 cursor-pointer"
               >
                 Explore More Stories
               </Button>

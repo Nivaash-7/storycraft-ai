@@ -13,7 +13,6 @@ export async function POST(req: NextRequest) {
     status = "Draft",
   } = await req.json();
 
-  // Validate required fields
   if (!userId || !title || !content || !genre) {
     return NextResponse.json(
       { error: "Missing required fields" },
@@ -23,12 +22,10 @@ export async function POST(req: NextRequest) {
 
   try {
     const client = await clientPromise;
-    const db = client.db("storycraft");
+    const db = client.db();
 
-    // Create index on userId for efficient queries
     await db.collection("stories").createIndex({ userId: 1 });
 
-    // Prepare story data
     const story: Omit<Story, "_id"> = {
       userId,
       title,
@@ -45,10 +42,8 @@ export async function POST(req: NextRequest) {
       comments: [],
     };
 
-    // Insert story into the database
     const storyResult = await db.collection("stories").insertOne(story);
 
-    // Update user document if story is published
     if (status === "Published") {
       await db
         .collection("users")
@@ -58,7 +53,6 @@ export async function POST(req: NextRequest) {
         );
     }
 
-    // Create activity log
     const activity: Omit<Activity, "_id"> = {
       userId,
       storyId: storyResult.insertedId,
@@ -69,7 +63,6 @@ export async function POST(req: NextRequest) {
     };
     await db.collection("activities").insertOne(activity);
 
-    // Return the created story with _id as string
     return NextResponse.json(
       { ...story, _id: storyResult.insertedId.toString() },
       { status: 201 }
@@ -83,22 +76,19 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// GET: Fetch stories for a specific user with optional status filter
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
   const status = searchParams.get("status");
 
-  // Validate required userId
   if (!userId) {
     return NextResponse.json({ error: "userId is required" }, { status: 400 });
   }
 
   try {
     const client = await clientPromise;
-    const db = client.db("storycraft");
+    const db = client.db();
 
-    // Build query object
     const query: { userId: string; status?: "Draft" | "Published" } = {
       userId,
     };
@@ -106,7 +96,6 @@ export async function GET(req: NextRequest) {
       query.status = status as "Draft" | "Published";
     }
 
-    // Fetch stories with sorting and limit
     const stories = await db
       .collection<Story>("stories")
       .find(query)
@@ -114,7 +103,6 @@ export async function GET(req: NextRequest) {
       .limit(50)
       .toArray();
 
-    // Format response with string IDs and ISO date strings
     return NextResponse.json(
       stories.map((s) => ({
         ...s,

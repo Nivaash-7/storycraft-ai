@@ -22,7 +22,7 @@ export async function POST(
 
   try {
     const client = await clientPromise;
-    const db = client.db("storycraft");
+    const db = client.db();
 
     const story = await db
       .collection<Story>("stories")
