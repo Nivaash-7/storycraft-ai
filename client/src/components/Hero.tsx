@@ -9,7 +9,16 @@ const Hero: React.FC = () => {
   const router = useRouter();
 
   const [titleNumber, setTitleNumber] = useState(0);
-  const titles = useMemo(() => ["Creative", "Immersive", "Interactive", "Personalized", "Innovative"], []);
+  const titles = useMemo(
+    () => [
+      "Creative",
+      "Immersive",
+      "Interactive",
+      "Personalized",
+      "Innovative",
+    ],
+    []
+  );
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -43,18 +52,21 @@ const Hero: React.FC = () => {
             </span>
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl leading-relaxed">
-            Unleash creativity with our AI-driven tools designed to enhance your narrative skills, from drafting ideas to crafting full stories.
+            Unleash creativity with our AI-driven tools designed to enhance your
+            narrative skills, from drafting ideas to crafting full stories.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 mt-6 sm:mt-8">
             <Button
               variant="outline"
               className="px-6 py-3 text-foreground border-border hover:bg-accent cursor-pointer"
+              onClick={() => router.push("/features")}
+              type="button"
             >
               Discover More
             </Button>
             <Button
               className="px-6 py-3 bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer"
-              onClick={() => router.push("/create-story")} 
+              onClick={() => router.push("/create-story")}
             >
               Start Writing
             </Button>

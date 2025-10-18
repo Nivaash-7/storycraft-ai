@@ -3,18 +3,18 @@ import { redirect } from "next/navigation";
 import { ModernSidebar } from "@/components/ModernSidebar";
 import DashboardContent from "@/components/DashboardContent";
 import clientPromise from "@/lib/mongodb";
-import type { Story,Activity } from "@/lib/models";
+import type { Story, Activity } from "@/lib/models";
 
 export default async function Dashboard() {
   const user = await currentUser();
 
   if (!user) {
-    redirect("/sign-in"); 
+    redirect("/sign-in");
     return null;
   }
 
   const client = await clientPromise;
-  const db = client.db("storycraft");
+  const db = client.db();
 
   const stories = await db
     .collection<Story>("stories")
@@ -39,16 +39,28 @@ export default async function Dashboard() {
     genre: story.genre,
   }));
 
-  const formattedActivities = activities.map((activity) => ({
+const formattedActivities = activities.map((activity) => {
+  const activityDate = new Date(activity.createdAt);
+  // Explicitly type istOptions as Intl.DateTimeFormatOptions
+  const istOptions: Intl.DateTimeFormatOptions = {
+    timeZone: 'Asia/Kolkata',
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  };
+  const istTime = activityDate.toLocaleString('en-US', istOptions);
+
+  return {
     id: activity._id.toString(),
     action: activity.type,
-    storyTitle: activity.details.split(" ")[1] || "Unknown",
-    timestamp: activity.createdAt.toISOString().replace("T", " ").split(".")[0],
-  }));
+    storyTitle: activity.details.replace(/^Drafted\s+/, "") || "Unknown",
+    timestamp: istTime,
+  };
+});
 
   return (
     <ModernSidebar>
-      <div className="ml-4"> 
+      <div className="ml-4">
         <DashboardContent
           firstName={user.firstName || "Storyteller"}
           stories={formattedStories}

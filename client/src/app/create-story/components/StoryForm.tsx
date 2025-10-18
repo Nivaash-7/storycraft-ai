@@ -75,6 +75,9 @@ export default function StoryMetadataForm({
               <SelectItem className="cursor-pointer" value="Mystery">
                 Mystery
               </SelectItem>
+               <SelectItem className="cursor-pointer" value="Thriller">
+                Thriller
+              </SelectItem>
               <SelectItem className="cursor-pointer" value="Other">
                 Other
               </SelectItem>

@@ -89,25 +89,6 @@ body {
   }
 }
 
-.cl-modalBackdrop {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.cl-internal-1dauvpw {
-  display: none;
-}
-
-.cl-internal-1hp5nqm {
-  display: none;
-}
-
-.cl-userPreviewSecondaryIdentifier {
-  display: none;
-}
-
 ::-webkit-scrollbar {
   width: 8px; 
   height: 8px; 
@@ -129,5 +110,47 @@ body {
 * {
   scrollbar-width: thin; 
   scrollbar-color: var(--primary) var(--background);
+}
+
+.cl-internal-1dauvpw {
+  display: none;
+}
+
+.cl-internal-1hp5nqm {
+  display: none;
+}
+
+.cl-userPreviewSecondaryIdentifier {
+  display: none;
+}
+
+
+.cl-card,
+.cl-cardBox {
+  background: transparent;
+  border-color: var(--border);
+  box-shadow: none;
+  padding: 2rem 1.5rem;
+}
+
+
+.cl-headerTitle {
+  font-size: 1.9rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.cl-headerSubtitle {
+  font-size: 0.875rem;
+}
+
+.cl-footer {
+  background: transparent;
+  border-top: none;
+}
+
+
+.cl-dividerLine {
+  background-color: var(--border);
 }
 

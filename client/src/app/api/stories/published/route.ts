@@ -6,7 +6,7 @@ import { ObjectId } from "mongodb";
 export async function GET() {
   try {
     const client = await clientPromise;
-    const db = client.db("storycraft");
+    const db = client.db();
 
     const stories = await db
       .collection<Story>("stories")
@@ -26,7 +26,10 @@ export async function GET() {
           $addFields: {
             author: {
               username: {
-                $ifNull: [{ $arrayElemAt: ["$authorInfo.username", 0] }, "Anonymous"],
+                $ifNull: [
+                  { $arrayElemAt: ["$authorInfo.username", 0] },
+                  "Anonymous",
+                ],
               },
               avatar: { $arrayElemAt: ["$authorInfo.avatar", 0] },
             },
@@ -56,10 +59,13 @@ export async function GET() {
             ...comment,
             _id: comment.toString() || `c${Date.now()}${Math.random()}`,
           })) || [],
-      })),
+      }))
     );
   } catch (error) {
     console.error("Error fetching published stories:", error);
-    return NextResponse.json({ error: "Failed to fetch stories" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch stories" },
+      { status: 500 }
+    );
   }
 }

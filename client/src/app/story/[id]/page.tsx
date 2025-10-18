@@ -1,43 +1,64 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useRef } from "react"
-import type React from "react"
-import { useParams, useRouter } from "next/navigation"
-import { Heart, Share2, Eye, ArrowLeft, MessageSquare, Send, Calendar, FileText, TrendingUp, Info } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Separator } from "@/components/ui/separator"
-import { Textarea } from "@/components/ui/textarea"
-import { useUser } from "@clerk/nextjs"
-import type { UserResource } from "@clerk/types"
-import { toast, Toaster } from "sonner"
-import { motion, AnimatePresence } from "framer-motion"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { ModernSidebar } from "@/components/ModernSidebar"
+import { useState, useEffect, useRef } from "react";
+import type React from "react";
+import { useParams, useRouter } from "next/navigation";
+import {
+  Heart,
+  Share2,
+  Eye,
+  ArrowLeft,
+  MessageSquare,
+  Send,
+  Calendar,
+  FileText,
+  TrendingUp,
+  Info,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardFooter,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
+import { useUser } from "@clerk/nextjs";
+import type { UserResource } from "@clerk/types";
+import { toast, Toaster } from "sonner";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { ModernSidebar } from "@/components/ModernSidebar";
 
 type Story = {
-  _id: string
-  title: string
-  description: string
-  content: string
-  genre: string
+  _id: string;
+  title: string;
+  description: string;
+  content: string;
+  genre: string;
   author: {
-    username: string
-    avatar?: string
-  }
-  publishedAt: string | Date
-  likes: string[]
-  wordCount: number
+    username: string;
+    avatar?: string;
+  };
+  publishedAt: string | Date;
+  likes: string[];
+  wordCount: number;
   comments: {
-    _id: string
-    userId: string
-    username: string
-    content: string
-    createdAt: string | Date
-  }[]
-}
+    _id: string;
+    userId: string;
+    username: string;
+    content: string;
+    createdAt: string | Date;
+  }[];
+};
 
 const StoryCard = ({
   story,
@@ -46,19 +67,23 @@ const StoryCard = ({
   handleShare,
   setStory,
 }: {
-  story: Story
-  user: UserResource | null
-  handleLike: () => Promise<void>
-  handleShare: () => Promise<void>
-  setStory: React.Dispatch<React.SetStateAction<Story | null>>
+  story: Story;
+  user: UserResource | null;
+  handleLike: () => Promise<void>;
+  handleShare: () => Promise<void>;
+  setStory: React.Dispatch<React.SetStateAction<Story | null>>;
 }) => {
-  const [showingDescription, setShowingDescription] = useState<Set<string>>(new Set())
-  const [showingComments, setShowingComments] = useState<Set<string>>(new Set())
-  const [commentInput, setCommentInput] = useState("")
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
-  const scrollRef = useRef<HTMLDivElement>(null)
-  const commentsRef = useRef<HTMLDivElement>(null)
-  const scrollPositions = useRef<Map<string, number>>(new Map())
+  const [showingDescription, setShowingDescription] = useState<Set<string>>(
+    new Set()
+  );
+  const [showingComments, setShowingComments] = useState<Set<string>>(
+    new Set()
+  );
+  const [commentInput, setCommentInput] = useState("");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const commentsRef = useRef<HTMLDivElement>(null);
+  const scrollPositions = useRef<Map<string, number>>(new Map());
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -68,59 +93,59 @@ const StoryCard = ({
         !commentsRef.current.contains(event.target as Node)
       ) {
         setShowingComments((prev: Set<string>) => {
-          const newSet = new Set(prev)
-          newSet.delete(story._id)
-          return newSet
-        })
+          const newSet = new Set(prev);
+          newSet.delete(story._id);
+          return newSet;
+        });
       }
-    }
+    };
 
-    document.addEventListener("mousedown", handleClickOutside)
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [showingComments, story._id])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showingComments, story._id]);
 
   const saveScrollPosition = (storyId: string) => {
     if (scrollRef.current) {
-      scrollPositions.current.set(storyId, scrollRef.current.scrollTop)
+      scrollPositions.current.set(storyId, scrollRef.current.scrollTop);
     }
-  }
+  };
 
   const restoreScrollPosition = (storyId: string) => {
-    const position = scrollPositions.current.get(storyId)
+    const position = scrollPositions.current.get(storyId);
     if (scrollRef.current && position !== undefined) {
-      scrollRef.current.scrollTo({ top: position, behavior: "smooth" })
+      scrollRef.current.scrollTo({ top: position, behavior: "smooth" });
     }
-  }
+  };
 
   const toggleDescription = (storyId: string) => {
-    saveScrollPosition(storyId)
+    saveScrollPosition(storyId);
     setShowingDescription((prev: Set<string>) => {
-      const newSet = new Set(prev)
+      const newSet = new Set(prev);
       if (newSet.has(storyId)) {
-        newSet.delete(storyId)
+        newSet.delete(storyId);
       } else {
-        newSet.add(storyId)
+        newSet.add(storyId);
       }
-      return newSet
-    })
-    setTimeout(() => restoreScrollPosition(storyId), 0)
-  }
+      return newSet;
+    });
+    setTimeout(() => restoreScrollPosition(storyId), 0);
+  };
 
   const toggleComments = (storyId: string) => {
-    saveScrollPosition(storyId)
+    saveScrollPosition(storyId);
     setShowingComments((prev: Set<string>) => {
-      const newSet = new Set(prev)
+      const newSet = new Set(prev);
       if (newSet.has(storyId)) {
-        newSet.delete(storyId)
+        newSet.delete(storyId);
       } else {
-        newSet.add(storyId)
+        newSet.add(storyId);
       }
-      return newSet
-    })
-    setTimeout(() => restoreScrollPosition(storyId), 0)
-  }
+      return newSet;
+    });
+    setTimeout(() => restoreScrollPosition(storyId), 0);
+  };
 
   const formatDate = (date: string | Date) => {
     return new Intl.DateTimeFormat("en-US", {
@@ -129,26 +154,26 @@ const StoryCard = ({
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    }).format(new Date(date))
-  }
+    }).format(new Date(date));
+  };
 
   const calculateReadingTime = (wordCount: number) => {
-    const wordsPerMinute = 200
-    const minutes = Math.ceil(wordCount / wordsPerMinute)
-    return minutes
-  }
+    const wordsPerMinute = 200;
+    const minutes = Math.ceil(wordCount / wordsPerMinute);
+    return minutes;
+  };
 
   const handleCommentSubmit = async () => {
     if (!user) {
-      toast.error("Please sign in to comment on a story.")
-      return
+      toast.error("Please sign in to comment on a story.");
+      return;
     }
-    const commentContent = commentInput.trim()
+    const commentContent = commentInput.trim();
     if (!commentContent) {
-      toast.error("Comment cannot be empty.")
-      return
+      toast.error("Comment cannot be empty.");
+      return;
     }
-    saveScrollPosition(story._id)
+    saveScrollPosition(story._id);
     try {
       const response = await fetch(`/api/stories/${story._id}/comment`, {
         method: "POST",
@@ -160,28 +185,28 @@ const StoryCard = ({
           username: user.firstName,
           content: commentContent,
         }),
-      })
+      });
       if (!response.ok) {
-        throw new Error("Failed to add comment")
+        throw new Error("Failed to add comment");
       }
-      const updatedStory = await response.json()
-      setStory(updatedStory)
-      setCommentInput("")
-      toast.success("Comment added successfully!")
-      setShowingComments((prev: Set<string>) => new Set(prev).add(story._id))
+      const updatedStory = await response.json();
+      setStory(updatedStory);
+      setCommentInput("");
+      toast.success("Comment added successfully!");
+      setShowingComments((prev: Set<string>) => new Set(prev).add(story._id));
       if (textareaRef.current) {
-        textareaRef.current.focus({ preventScroll: true })
+        textareaRef.current.focus({ preventScroll: true });
       }
-      setTimeout(() => restoreScrollPosition(story._id), 0)
+      setTimeout(() => restoreScrollPosition(story._id), 0);
     } catch (err) {
-      console.error("Error adding comment:", err)
-      toast.error("Failed to add comment. Please try again.")
+      console.error("Error adding comment:", err);
+      toast.error("Failed to add comment. Please try again.");
     }
-  }
+  };
 
-  const showingDesc = showingDescription.has(story._id)
-  const showingComms = showingComments.has(story._id)
-  const readingTime = calculateReadingTime(story.wordCount ?? 0)
+  const showingDesc = showingDescription.has(story._id);
+  const showingComms = showingComments.has(story._id);
+  const readingTime = calculateReadingTime(story.wordCount ?? 0);
 
   return (
     <TooltipProvider>
@@ -190,16 +215,18 @@ const StoryCard = ({
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-4 flex-1">
               <Avatar className="h-12 w-12 ring-2 ring-primary/20 hover:ring-primary/40 transition-all">
-                <AvatarImage src={story.author?.avatar || "/placeholder.svg"} />
+                <AvatarImage src={story.author?.avatar} />
                 <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
-                  {story.author?.username?.[0]?.toUpperCase() || "U"}
+                  {story.author?.username?.[0]?.toUpperCase() || "W"}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-3 mb-2">
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <h3 className="font-semibold text-foreground hover:text-primary cursor-pointer transition-colors">{story.author?.username}</h3>
+                      <h3 className="font-semibold text-foreground hover:text-primary cursor-pointer transition-colors">
+                        {story.author?.username || "Anonymous Writer"}
+                      </h3>
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>View author profile</p>
@@ -223,7 +250,10 @@ const StoryCard = ({
                         </Badge>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>This story is trending with {story.likes?.length} likes!</p>
+                        <p>
+                          This story is trending with {story.likes?.length}{" "}
+                          likes!
+                        </p>
                       </TooltipContent>
                     </Tooltip>
                   )}
@@ -244,12 +274,15 @@ const StoryCard = ({
                     <TooltipTrigger asChild>
                       <div className="flex items-center gap-1">
                         <FileText className="h-3 w-3" />
-                        <span>{(story.wordCount ?? 0).toLocaleString()} words</span>
+                        <span>
+                          {(story.wordCount ?? 0).toLocaleString()} words
+                        </span>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>
-                        Approximately {readingTime} minute{readingTime !== 1 ? "s" : ""} read
+                        Approximately {readingTime} minute
+                        {readingTime !== 1 ? "s" : ""} read
                       </p>
                     </TooltipContent>
                   </Tooltip>
@@ -261,7 +294,9 @@ const StoryCard = ({
                       </div>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>Estimated reading time based on {story.wordCount} words</p>
+                      <p>
+                        Estimated reading time based on {story.wordCount} words
+                      </p>
                     </TooltipContent>
                   </Tooltip>
                 </div>
@@ -302,7 +337,9 @@ const StoryCard = ({
                 <div className="flex items-start gap-2">
                   <Info className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                   <div>
-                    <h4 className="font-medium text-foreground mb-2">About this story</h4>
+                    <h4 className="font-medium text-foreground mb-2">
+                      About this story
+                    </h4>
                     <p className="text-muted-foreground text-sm leading-relaxed">
                       {story.description || "No description available"}
                     </p>
@@ -319,7 +356,8 @@ const StoryCard = ({
               style={{
                 lineHeight: "1.7",
                 fontSize: "16px",
-                fontFamily: 'var(--font-montserrat), Georgia, "Times New Roman", serif',
+                fontFamily:
+                  'var(--font-montserrat), Georgia, "Times New Roman", serif',
               }}
             >
               {story.content || "No content available"}
@@ -346,14 +384,21 @@ const StoryCard = ({
                   >
                     <Heart
                       className={`h-4 w-4 mr-2 ${
-                        user?.id && story.likes?.includes(user.id) ? "fill-current" : ""
+                        user?.id && story.likes?.includes(user.id)
+                          ? "fill-current"
+                          : ""
                       }`}
                     />
                     {story.likes?.length ?? 0}
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>{user?.id && story.likes?.includes(user.id) ? "Unlike" : "Like"} this story</p>
+                  <p>
+                    {user?.id && story.likes?.includes(user.id)
+                      ? "Unlike"
+                      : "Like"}{" "}
+                    this story
+                  </p>
                 </TooltipContent>
               </Tooltip>
               <Tooltip>
@@ -380,7 +425,10 @@ const StoryCard = ({
                   </div>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Total engagement: {story.likes?.length + story.comments?.length} interactions</p>
+                  <p>
+                    Total engagement:{" "}
+                    {story.likes?.length + story.comments?.length} interactions
+                  </p>
                 </TooltipContent>
               </Tooltip>
               <Tooltip>
@@ -415,15 +463,19 @@ const StoryCard = ({
                 <div className="bg-muted/30 border border-border/50 rounded-lg p-4 space-y-4">
                   <div className="flex items-center gap-2 mb-4">
                     <MessageSquare className="h-4 w-4 text-primary" />
-                    <h4 className="font-medium text-foreground">Comments ({story.comments?.length || 0})</h4>
+                    <h4 className="font-medium text-foreground">
+                      Comments ({story.comments?.length || 0})
+                    </h4>
                   </div>
 
                   <div className="bg-background border border-border rounded-lg p-3 space-y-3">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
                       <Avatar className="h-8 w-8 flex-shrink-0">
-                        <AvatarImage src={user?.imageUrl || "/placeholder.svg"} />
+                        <AvatarImage
+                          src={user?.imageUrl || "/placeholder.svg"}
+                        />
                         <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-                          {user?.firstName?.[0]?.toUpperCase() || "U"}
+                          {user?.firstName?.[0]?.toUpperCase() || "Anonymous"}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 space-y-2">
@@ -434,8 +486,8 @@ const StoryCard = ({
                           onChange={(e) => setCommentInput(e.target.value)}
                           onKeyDown={(e) => {
                             if (e.key === "Enter" && !e.shiftKey) {
-                              e.preventDefault()
-                              handleCommentSubmit()
+                              e.preventDefault();
+                              handleCommentSubmit();
                             }
                           }}
                           className="border-border focus:border-primary transition-colors resize-none min-h-[80px]"
@@ -469,15 +521,21 @@ const StoryCard = ({
                           <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
                             <Avatar className="h-8 w-8 flex-shrink-0">
                               <AvatarFallback className="bg-muted text-muted-foreground text-xs">
-                                {comment.username[0]?.toUpperCase() || "U"}
+                                {comment.username[0]?.toUpperCase() || "Anonymous"}
                               </AvatarFallback>
                             </Avatar>
                             <div className="flex-1 min-w-0">
                               <div className="flex flex-wrap items-center gap-2 mb-1">
-                                <span className="text-sm font-medium text-foreground">{comment.username}</span>
-                                <span className="text-xs text-muted-foreground">{formatDate(comment.createdAt)}</span>
+                                <span className="text-sm font-medium text-foreground">
+                                  {comment.username}
+                                </span>
+                                <span className="text-xs text-muted-foreground">
+                                  {formatDate(comment.createdAt)}
+                                </span>
                               </div>
-                              <p className="text-sm text-foreground leading-relaxed break-words">{comment.content}</p>
+                              <p className="text-sm text-foreground leading-relaxed break-words">
+                                {comment.content}
+                              </p>
                             </div>
                           </div>
                         </motion.div>
@@ -485,7 +543,9 @@ const StoryCard = ({
                     ) : (
                       <div className="text-center py-8">
                         <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-3 opacity-50" />
-                        <p className="text-sm text-muted-foreground">No comments yet. Be the first to share your thoughts!</p>
+                        <p className="text-sm text-muted-foreground">
+                          No comments yet. Be the first to share your thoughts!
+                        </p>
                       </div>
                     )}
                   </div>
@@ -496,48 +556,48 @@ const StoryCard = ({
         </CardFooter>
       </Card>
     </TooltipProvider>
-  )
-}
+  );
+};
 
 export default function StoryViewPage() {
-  const params = useParams()
-  const router = useRouter()
-  const { user } = useUser()
-  const [story, setStory] = useState<Story | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const params = useParams();
+  const router = useRouter();
+  const { user } = useUser();
+  const [story, setStory] = useState<Story | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchStory = async () => {
       try {
-        setLoading(true)
-        const response = await fetch(`/api/stories/${params.id}`)
+        setLoading(true);
+        const response = await fetch(`/api/stories/${params.id}`);
         if (!response.ok) {
-          throw new Error(`Failed to fetch story: ${response.status}`)
+          throw new Error(`Failed to fetch story: ${response.status}`);
         }
-        const data = await response.json()
-        setStory(data)
+        const data = await response.json();
+        setStory(data);
       } catch (err) {
-        console.error("Error fetching story:", err)
-        setError("Failed to load story. Please try again.")
-        toast.error("Failed to load story. Please try again.")
+        console.error("Error fetching story:", err);
+        setError("Failed to load story. Please try again.");
+        toast.error("Failed to load story. Please try again.");
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
     if (params.id) {
-      fetchStory()
+      fetchStory();
     }
-  }, [params.id])
+  }, [params.id]);
 
   const handleLike = async () => {
     if (!user || !story) {
-      toast.error("Please sign in to like this story.")
-      return
+      toast.error("Please sign in to like this story.");
+      return;
     }
     try {
-      const isLiked = story.likes.includes(user.id)
+      const isLiked = story.likes.includes(user.id);
       const response = await fetch(`/api/stories/${story._id}/like`, {
         method: "POST",
         headers: {
@@ -547,46 +607,50 @@ export default function StoryViewPage() {
           userId: user.id,
           action: isLiked ? "unlike" : "like",
         }),
-      })
+      });
       if (!response.ok) {
-        throw new Error("Failed to update like")
+        throw new Error("Failed to update like");
       }
-      const updatedStory = await response.json()
-      setStory(updatedStory)
-      toast.success(isLiked ? "Story unliked." : "Story liked!")
+      const updatedStory = await response.json();
+      setStory(updatedStory);
+      toast.success(isLiked ? "Story unliked." : "Story liked!");
     } catch (err) {
-      console.error("Error updating like:", err)
-      toast.error("Failed to update like. Please try again.")
+      console.error("Error updating like:", err);
+      toast.error("Failed to update like. Please try again.");
     }
-  }
+  };
 
   const handleShare = async () => {
-    if (!story) return
+    if (!story) return;
 
     if (navigator.share) {
       try {
         await navigator.share({
           title: story.title || "Check out this story!",
-          text: `${story.description || `A great story by ${story.author?.username}`}\nRead more here:`,
+          text: `${
+            story.description || `A great story by ${story.author?.username}`
+          }\nRead more here:`,
           url: window.location.href,
-        })
-        toast.success("Story shared successfully!")
+        });
+        toast.success("Story shared successfully!");
       } catch (err) {
-        console.error("Error sharing story:", err)
-        toast.error("Failed to share. Please try again.")
+        console.error("Error sharing story:", err);
+        toast.error("Failed to share. Please try again.");
       }
     } else {
-      navigator.clipboard.writeText(window.location.href)
-      toast.success("Story URL copied to clipboard!")
+      navigator.clipboard.writeText(window.location.href);
+      toast.success("Story URL copied to clipboard!");
     }
-  }
+  };
 
   if (loading) {
     return (
       <ModernSidebar>
         <div className="h-screen overflow-hidden bg-background">
           <div className="max-w-7xl mx-auto px-4 py-4 h-full flex flex-col">
-            <h1 className="text-3xl font-bold text-primary mb-2">Story View Page</h1>
+            <h1 className="text-3xl font-bold text-primary mb-2">
+              Story View Page
+            </h1>
             <p className="text-muted-foreground text-lg mb-4">
               Explore and engage with your favorite stories in detail
             </p>
@@ -612,7 +676,7 @@ export default function StoryViewPage() {
           </div>
         </div>
       </ModernSidebar>
-    )
+    );
   }
 
   if (error || !story) {
@@ -620,14 +684,18 @@ export default function StoryViewPage() {
       <ModernSidebar>
         <div className="h-screen overflow-hidden bg-background">
           <div className="max-w-7xl mx-auto px-4 py-4 h-full flex flex-col">
-            <h1 className="text-3xl font-bold text-foreground mb-2">Story View Page</h1>
+            <h1 className="text-3xl font-bold text-foreground mb-2">
+              Story View Page
+            </h1>
             <p className="text-muted-foreground text-lg mb-4">
               Explore and engage with your favorite stories in detail
             </p>
             <div className="flex-1 overflow-hidden">
               <Card className="border border-destructive/50 shadow-sm bg-card h-full">
                 <CardContent className="p-8 text-center">
-                  <p className="text-destructive mb-4">{error || "Story not found"}</p>
+                  <p className="text-destructive mb-4">
+                    {error || "Story not found"}
+                  </p>
                   <div className="flex gap-4 justify-center">
                     <Button
                       variant="outline"
@@ -651,7 +719,7 @@ export default function StoryViewPage() {
           </div>
         </div>
       </ModernSidebar>
-    )
+    );
   }
 
   return (
@@ -670,7 +738,9 @@ export default function StoryViewPage() {
             }}
           />
           <div className="max-w-7xl mx-auto px-4 py-4 h-full flex flex-col">
-            <h1 className="text-3xl font-bold text-primary mb-2">Story View Page</h1>
+            <h1 className="text-3xl font-bold text-primary mb-2">
+              Story View Page
+            </h1>
             <p className="text-muted-foreground text-lg mb-4">
               Explore and engage with your favorite stories in detail
             </p>
@@ -689,5 +759,5 @@ export default function StoryViewPage() {
         </div>
       </TooltipProvider>
     </ModernSidebar>
-  )
+  );
 }

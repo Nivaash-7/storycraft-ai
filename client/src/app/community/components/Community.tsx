@@ -50,7 +50,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Textarea } from "@/components/ui/textarea";
 import { ModernSidebar } from "@/components/ModernSidebar";
-import { Story, } from "@/lib/models";
+import { Story } from "@/lib/models";
 import { ObjectId } from "mongodb";
 
 const genres = [
@@ -61,6 +61,7 @@ const genres = [
   "Romance",
   "Horror",
   "Adventure",
+  "Thriller",
 ];
 
 // Helper functions
@@ -156,14 +157,23 @@ const Community = ({ stories, loading, error, setStories }: CommunityProps) => {
       toast.error("Please sign in to like a story.");
       return;
     }
+
     saveScrollPosition(storyId);
 
     try {
       const story = stories.find((s) => toIdString(s._id) === storyId);
+      if (!story) {
+        toast.error("Story not found.");
+        return;
+      }
+
       const isLiked = story?.likes.some((id) => toIdString(id) === user.id);
+
       const response = await fetch(`/api/stories/${storyId}/like`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           userId: user.id,
           action: isLiked ? "unlike" : "like",
@@ -171,18 +181,25 @@ const Community = ({ stories, loading, error, setStories }: CommunityProps) => {
       });
 
       if (!response.ok) {
-        console.error("API error response", await response.text());
+        console.error("API error response:", await response.text());
         throw new Error("Failed to update like");
       }
 
       const updatedStory = await response.json();
-      console.log("API updated story:", updatedStory);
+
+      // Preserve author info if missing in updatedStory
+      const oldStory = stories.find((s) => toIdString(s._id) === storyId);
+      const mergedStory = {
+        ...updatedStory,
+        author: updatedStory.author || oldStory?.author,
+      };
 
       setStories((prev) =>
-        prev.map((s) => (toIdString(s._id) === storyId ? updatedStory : s))
+        prev.map((s) => (toIdString(s._id) === storyId ? mergedStory : s))
       );
+
       toast.success(isLiked ? "Story unliked." : "Story liked!");
-      setTimeout(() => restoreScrollPosition(storyId), 0);
+      setTimeout(() => restoreScrollPosition(storyId), 100);
     } catch (err) {
       console.error("Error updating like:", err);
       toast.error("Failed to update like. Please try again.");
@@ -214,7 +231,7 @@ const Community = ({ stories, loading, error, setStories }: CommunityProps) => {
       );
       toast.success("Story URL copied to clipboard!");
     }
-    setTimeout(() => restoreScrollPosition(storyId), 0);
+    setTimeout(() => restoreScrollPosition(storyId), 100);
   };
 
   const toggleSetItem = (set: Set<string>, id: string): Set<string> => {
@@ -227,19 +244,19 @@ const Community = ({ stories, loading, error, setStories }: CommunityProps) => {
   const toggleStoryExpansion = (storyId: string) => {
     saveScrollPosition(storyId);
     setExpandedStories((prev) => toggleSetItem(prev, storyId));
-    setTimeout(() => restoreScrollPosition(storyId), 0);
+    setTimeout(() => restoreScrollPosition(storyId), 100);
   };
 
   const toggleDescription = (storyId: string) => {
     saveScrollPosition(storyId);
     setShowingDescription((prev) => toggleSetItem(prev, storyId));
-    setTimeout(() => restoreScrollPosition(storyId), 0);
+    setTimeout(() => restoreScrollPosition(storyId), 100);
   };
 
   const toggleComments = (storyId: string) => {
     saveScrollPosition(storyId);
     setShowingComments((prev) => toggleSetItem(prev, storyId));
-    setTimeout(() => restoreScrollPosition(storyId), 0);
+    setTimeout(() => restoreScrollPosition(storyId), 100);
   };
 
   const calculateReadingTime = (wordCount: number) => {
@@ -274,13 +291,13 @@ const Community = ({ stories, loading, error, setStories }: CommunityProps) => {
             newSet.delete(idStr);
             return newSet;
           });
-          setTimeout(() => restoreScrollPosition(idStr), 0);
+          setTimeout(() => restoreScrollPosition(idStr), 100);
         }
       };
+
       document.addEventListener("mousedown", handleClickOutside);
-      return () => {
+      return () =>
         document.removeEventListener("mousedown", handleClickOutside);
-      };
     }, [showingComms, idStr]);
 
     const handleCommentSubmit = async () => {
@@ -288,32 +305,57 @@ const Community = ({ stories, loading, error, setStories }: CommunityProps) => {
         toast.error("Please sign in to comment on a story.");
         return;
       }
-      const commentContent = commentInput.trim();
-      if (!commentContent) {
+
+      const commentContentTrimmed = commentInput.trim();
+      if (!commentContentTrimmed) {
         toast.error("Comment cannot be empty.");
         return;
       }
-      saveScrollPosition(idStr);
+
+      saveScrollPosition(toIdString(story._id));
+
       try {
-        const response = await fetch(`/api/stories/${idStr}/comment`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            userId: user.id,
-            username: user.firstName || "Anonymous",
-            content: commentContent,
-          }),
-        });
-        if (!response.ok) throw new Error("Failed to add comment");
-        const updatedStory = await response.json();
-        setStories((prev) =>
-          prev.map((s) => (toIdString(s._id) === idStr ? updatedStory : s))
+        const response = await fetch(
+          `/api/stories/${toIdString(story._id)}/comment`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              userId: user.id,
+              username: user.firstName || user.username || "Anonymous",
+              avatar: user.imageUrl || null,
+              content: commentContentTrimmed,
+            }),
+          }
         );
+
+        if (!response.ok) {
+          throw new Error("Failed to add comment");
+        }
+
+        const updatedStory = await response.json();
+
+        const oldStory = stories.find(
+          (s) => toIdString(s._id) === toIdString(updatedStory._id)
+        );
+
+        const mergedStory = {
+          ...updatedStory,
+          author: updatedStory.author || oldStory?.author,
+        };
+
+        setStories((prev) =>
+          prev.map((s) =>
+            toIdString(s._id) === toIdString(updatedStory._id) ? mergedStory : s
+          )
+        );
+
         setCommentInput("");
         toast.success("Comment added successfully!");
-        setShowingComments((prev) => new Set(prev).add(idStr));
-        textareaRef.current?.focus({ preventScroll: true });
-        setTimeout(() => restoreScrollPosition(idStr), 0);
+        setShowingComments((prev) => new Set(prev).add(toIdString(story._id)));
+        setTimeout(() => restoreScrollPosition(toIdString(story._id)), 100);
       } catch (err) {
         console.error("Error adding comment:", err);
         toast.error("Failed to add comment. Please try again.");
@@ -679,6 +721,9 @@ const Community = ({ stories, loading, error, setStories }: CommunityProps) => {
                           >
                             <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
                               <Avatar className="h-8 w-8 flex-shrink-0">
+                                <AvatarImage
+                                  src={comment.avatar || "/placeholder.svg"}
+                                />
                                 <AvatarFallback className="bg-muted text-muted-foreground text-xs">
                                   {comment.username &&
                                   comment.username.length > 0

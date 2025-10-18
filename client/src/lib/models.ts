@@ -5,6 +5,7 @@ export interface Comment {
   userId: string;
   username: string;
   content: string;
+  avatar?: string;
   createdAt: Date | string;
 }
 
@@ -44,6 +45,4 @@ export interface User {
   username: string;
   avatar?: string;
   publishedStories: ObjectId[];
-  likedStories: ObjectId[];
-  commentsMade: ObjectId[];
 }

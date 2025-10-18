@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const client = await clientPromise;
-    const db = client.db("storycraft");
+    const db = client.db();
 
     // Create index on userId for efficient queries
     await db.collection("stories").createIndex({ userId: 1 });
@@ -96,7 +96,7 @@ export async function GET(req: NextRequest) {
 
   try {
     const client = await clientPromise;
-    const db = client.db("storycraft");
+    const db = client.db();
 
     // Build query object
     const query: { userId: string; status?: "Draft" | "Published" } = {

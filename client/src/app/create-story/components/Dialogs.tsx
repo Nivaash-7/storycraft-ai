@@ -147,7 +147,7 @@ export function AutosaveWarningDialog({ showAutosaveWarning, setShowAutosaveWarn
         <div className="py-4">
           <p className="text-sm text-muted-foreground mb-4">
             To use the autosave feature, please provide a story title and select a genre. Autosave will automatically
-            save your draft every 2 minutes.
+            save your draft every 5 minutes.
           </p>
           <div className="flex flex-col gap-2">
             <Button
